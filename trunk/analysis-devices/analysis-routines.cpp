@@ -11,6 +11,16 @@ compare_images::compare_images()
 	printf("Default Base Constructor \n");
 }
 
+void compare_images::assign_buffers(float * prev, float * next)
+{
+	//! Uses the cl_map calls to map the pointers passed to the
+	//! buffer objects
+}
+
+bool compare_images::set_pipeline_state()
+{
+	return ENABLED;
+}
 //! Configure the analysis kernel
 //! \param p_img Present Image
 //! \param p_img Next Image

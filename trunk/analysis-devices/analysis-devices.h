@@ -7,6 +7,23 @@
 #ifndef __ANALYSIS_DEVICE_
 #define __ANALYSIS_DEVICE_
 
+//! A kernel object containing all the necessary parameters to launch a kernel.
+//! Dont add a cl_command_queue here because we dont know what device kernel gets thrown on
+struct _kernel_object
+{
+	cl_kernel kernel;
+	//!localws and global ws hardwired to 3. Max dim of OpenCL kernels
+	size_t dim_localws;
+	size_t dim_globalws;
+	//!localws and global ws hardwired to 3. Max dim of OpenCL kernels
+	size_t localws[3];
+	size_t globalws[3];
+	char * name;
+	int n_args;
+};
+
+typedef _kernel_object * kernel_object;
+
 class analysis_results
 {
 
@@ -35,7 +52,7 @@ private:
 	//! Since specific inherited case needs to set args
 	cl_kernel * analysis_kernels;
 	int n_analysis_kernels;
-
+	std::vector<kernel_object> kernel_vec;
 
 protected:
 
@@ -65,7 +82,7 @@ public:
 
 	analysis_device();
 	void alloc_kernel_mem(int k);
-
+	kernel_object alloc_kernel_object();
 	//! Compile kernel for device
 	void set_analysis_kernel(char * filename, char * kernel_name, int pos);
 	//! Set up Fission, create root context and subqueues

@@ -62,6 +62,11 @@ char * analysis_device::generate_kernel_path(char * filename)
 
 }
 
+kernel_object analysis_device::alloc_kernel_object()
+{
+	return new _kernel_object;
+}
+
 void analysis_device::set_analysis_kernel(char * filename, char * kernel_name,int pos)
 {
  	topo->cl_CompileProgramRootDevices(filename,NULL,0);
@@ -71,7 +76,16 @@ void analysis_device::set_analysis_kernel(char * filename, char * kernel_name,in
  	cl_int status;
  	analysis_kernels[pos] = clCreateKernel(analysis_program,kernel_name,&status);
 
-	ad_errChk(status, "Creating Analysis Kernel",EXITERROR);
+ 	//New API for kernel object, wrap up all the things needed to launch a kernel
+ 	//!Dont add a cl_command_queue here because we dont know what device stuff gets thrown on
+ 	kernel_object k = alloc_kernel_object();
+ 	k->dim_globalws = 2;
+ 	k->dim_localws = 2;
+ 	k->name = kernel_name;
+ 	k->kernel = clCreateKernel(analysis_program,kernel_name,&status);
+ 	kernel_vec.push_back(k);
+
+ 	cl_errChk(status, "Creating Analysis Kernel",EXITERROR);
 
 }
 
@@ -81,12 +95,11 @@ void analysis_device::configure_analysis_device()
 	topo = new fission_topology;
 
 	// Configuration Command for Device Fission
-//    cl_device_partition_property_ext partitionPrty[3] =
-//    {       CL_DEVICE_PARTITION_EQUALLY_EXT,
-//            1,
-//            CL_PROPERTIES_LIST_END_EXT
- //   };
-
+	//    cl_device_partition_property_ext partitionPrty[3] =
+	//    {       CL_DEVICE_PARTITION_EQUALLY_EXT,
+	//            1,
+	//            CL_PROPERTIES_LIST_END_EXT
+	//   };
 	//setup_fission(topo,partitionPrty);
 
 	setup_fission(topo);
@@ -103,15 +116,17 @@ void analysis_device::inject_analysis()
 	cl_int status;
 	//cl_setKernelArg(kernel,);
 
-	cl_event analysis_event;
+
 	//!TODO Multiple kernels could be enqueued
 	for(int i = 0; i<n_analysis_kernels; i++)
 	{
+		cl_event analysis_event;
 		status = clEnqueueNDRangeKernel(queue,analysis_kernels[i],
 					ws_dims,0,globalws,localws,
 					len_analysis_waitlist,analysis_waitlist,
 					&analysis_event);
 		cl_errChk(status,"Enq inj analysis", EXITERROR);
+		profiler->add(analysis_event);
+
 	}
-	profiler->add(analysis_event);
 }
