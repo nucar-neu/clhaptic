@@ -1,11 +1,10 @@
+#ifndef __ANALYSIS_DEVICE_
+#define __ANALYSIS_DEVICE_
 
 #include <CL/cl.h>
 #include "analysis-devices-utils.h"
 #include "fissionutils.h"
-#include "../profiler/eventlist.h"
-
-#ifndef __ANALYSIS_DEVICE_
-#define __ANALYSIS_DEVICE_
+#include <eventlist.h>
 
 //! A kernel object containing all the necessary parameters to launch a kernel.
 //! Dont add a cl_command_queue here because we dont know what device kernel gets thrown on
