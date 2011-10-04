@@ -1,0 +1,3 @@
+SUBDIRS =\
+	libanalysis-devices \
+	libprofiler
