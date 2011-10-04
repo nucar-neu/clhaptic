@@ -223,12 +223,8 @@ void setup_baseline(fission_topology * topo)
 //! Reason for using function pointers
 void setup_fission(fission_topology * topo)
 {
-    printf("USING local fission file Version in oclprof\n");
-
 
     cl_platform_id  * platforms ;
-
-
     cl_int status;
 
     int platform_touse;
@@ -320,6 +316,7 @@ void setup_fission(fission_topology * topo)
 
     printf("no of subdevices %d\n",topo->numSubDevices);
 
+    topo->rootQueue = (cl_command_queue *)malloc(topo->numRootDevices*sizeof(cl_command_queue));
 
     topo->subDevices = (cl_device_id*)malloc( (topo->numSubDevices) * sizeof(cl_device_id));
     topo->subQueue= (cl_command_queue *)malloc( (topo->numSubDevices) * sizeof(cl_command_queue ));
@@ -342,6 +339,8 @@ void setup_fission(fission_topology * topo)
 
     if(cl_errChk(status,"clCreateContext for subdevices failed."))exit(1);
     printf("Creating contexts for subdevices\n");
+    topo->rootQueue[0] = clCreateCommandQueue(topo->root_context,
+					topo->root_device, CL_QUEUE_PROFILING_ENABLE, &status);
 
 	for(unsigned int i=0;i<(topo->numSubDevices);i++)
     {

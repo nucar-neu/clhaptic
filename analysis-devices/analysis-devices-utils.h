@@ -13,6 +13,8 @@
 
 #define DONTEXITERROR 0
 
+#define UNKNOWNSIZE -999
+
 //! Allocate pinned memory
 cl_mem ad_allocBufferPinned(size_t mem_size,cl_context ctx );
 

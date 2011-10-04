@@ -17,8 +17,9 @@ class compare_images : public analysis_device
 
 private:
 
-	analysis_results opbuff;
-
+	result_buffer opbuff;
+	cl_mem p_img;
+	cl_mem n_img;
 public:
 	compare_images();
 
@@ -26,14 +27,13 @@ public:
 
 	//! This function handles initial set up only
 	void initialize_analysis_kernels();
-
-	void assign_buffers(float * prev, float * next);
+	void init_buffers(size_t mem_size);
+	void assign_buffers_copy(float * prev, float * next,size_t mem_size);
 
 	//! Kernel Configuration function.
 	//! Should be called before the analysis_device::inject_analysis() function
-	void configure_analysis_kernel(
-			cl_mem p_img, cl_mem n_img,
-			int W, int H );
+	void configure_analysis_kernel( int W, int H );
+
 
 	//! Not used.
 	//! Has been disabled for now since the user cannot control when the
