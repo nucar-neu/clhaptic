@@ -1,8 +1,6 @@
 #include <CL/cl.h>
-
-#include "../profiler/eventlist.h"
-
- #include "analysis-routines.h"
+#include <eventlist.h>
+#include "analysis-routines.h"
 
 //enum image_similarity;
 

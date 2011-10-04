@@ -160,7 +160,7 @@ void analysis_device::inject_analysis()
 {
 	cl_int status;
 	//cl_setKernelArg(kernel,);
-	printf("Number of kernels %d\n",kernel_vec.size());
+	printf("Number of kernels %ld\n", kernel_vec.size());
 
 	//!TODO Multiple kernels could be enqueued
 

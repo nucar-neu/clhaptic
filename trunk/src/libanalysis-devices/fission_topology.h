@@ -1,9 +1,8 @@
-#include <CL/cl.h>
-
-#include "../profiler/eventtypes.h"
-
 #ifndef _FISSION_TOPLOGY_H_
 #define _FISSION_TOPLOGY_H_
+
+#include <CL/cl.h>
+#include <eventtypes.h>
 
 
 #define ROUND_ROBIN  0x100
