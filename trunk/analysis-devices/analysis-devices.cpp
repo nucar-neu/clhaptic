@@ -11,24 +11,38 @@
 //! This is done since SURF and the Palantir both use the same set of utility functions
 #define cl_errChk ad_errChk
 
-void analysis_results::allocate_buffer(size_t mem_size, cl_context ctx)
+void result_buffer::allocate_buffer(size_t size, cl_context ctx)
 {
+	mem_size = size;
 	ad_allocBufferPinned(mem_size,ctx);
 
 }
 
+void result_buffer::allocate_image(size_t size, cl_context ctx)
+{
+	mem_size = size;
+	ad_allocBufferPinned(mem_size,ctx);
+
+}
+
+result_buffer::result_buffer()
+{
+	mem_size = UNKNOWNSIZE;
+}
+
+
 analysis_device::analysis_device()
 {
 	//! By default, no waitlist used
-	ws_dims = 2;
-	len_analysis_waitlist = 0;
+ 	len_analysis_waitlist = 0;
 	analysis_waitlist = NULL;
+	n_analysis_kernels = 0;
 	//profiler(context,queue,device,1);
 }
 
 analysis_device::~analysis_device()
 {
-	free(analysis_kernels);
+
 	// Shutdown fissions tuff
 	free(topo);
 	delete profiler;
@@ -37,8 +51,8 @@ analysis_device::~analysis_device()
 cl_kernel analysis_device::getKernel(int k)
 {
 	//! Bound check
-	if(k < n_analysis_kernels)
-		return analysis_kernels[k];
+ 	if(k < n_analysis_kernels)
+		return kernel_vec.at(k)->kernel;
 	else
 	{
 		printf("Invalid Kernel Requested\n");
@@ -47,12 +61,40 @@ cl_kernel analysis_device::getKernel(int k)
 	}
 }
 
+/**
+ *
+ * @param mem Host memory
+ * @param buff Buffer on analysis device
+ * @param mem_size Memory size
+ */
+void analysis_device::copyHostToAd(cl_mem buff,void * mem,  size_t mem_size)
+{
+	clEnqueueWriteBuffer(queue,buff,1,0,mem_size,mem,0,NULL,NULL);
+}
+
+/**
+ *
+ * @return
+ */
+cl_context analysis_device::getContext()
+{
+	return context;
+}
+
+
+//! For the case where you may want to preallocate a number of kernels
+/**
+ *
+ * @param k
+ */
 void analysis_device::alloc_kernel_mem(int k)
 {
+	printf("Resizing Kernel Vector - Not Good\n");
 	n_analysis_kernels = k;
-	analysis_kernels = ( cl_kernel *)malloc(k*sizeof(cl_kernel));
-	if(analysis_kernels == NULL)
-		printf("malloc error");
+	//! Old api was to have a array of analysis_kernels instead of a vector
+	//!analysis_kernels = ( cl_kernel *)malloc(k*sizeof(cl_kernel));
+	kernel_vec.resize(k);
+
 }
 
 char * analysis_device::generate_kernel_path(char * filename)
@@ -67,25 +109,27 @@ kernel_object analysis_device::alloc_kernel_object()
 	return new _kernel_object;
 }
 
-void analysis_device::set_analysis_kernel(char * filename, char * kernel_name,int pos)
+void analysis_device::build_analysis_kernel(char * filename, char * kernel_name,int pos)
 {
  	topo->cl_CompileProgramRootDevices(filename,NULL,0);
 	//TODO Fix this constant allocation
  	analysis_program =  topo->root_program[0];
 
  	cl_int status;
- 	analysis_kernels[pos] = clCreateKernel(analysis_program,kernel_name,&status);
-
- 	//New API for kernel object, wrap up all the things needed to launch a kernel
+ 	//!analysis_kernels[pos] = clCreateKernel(analysis_program,kernel_name,&status);
+ 	//!New API for kernel object, wrap up all the things needed to launch a kernel
  	//!Dont add a cl_command_queue here because we dont know what device stuff gets thrown on
+
  	kernel_object k = alloc_kernel_object();
  	k->dim_globalws = 2;
  	k->dim_localws = 2;
  	k->name = kernel_name;
  	k->kernel = clCreateKernel(analysis_program,kernel_name,&status);
- 	kernel_vec.push_back(k);
-
  	cl_errChk(status, "Creating Analysis Kernel",EXITERROR);
+ 	kernel_vec.push_back(k);
+ 	n_analysis_kernels ++;
+
+ 	printf("Created Analysis Kernel\n");
 
 }
 
@@ -106,7 +150,8 @@ void analysis_device::configure_analysis_device()
 
 	//! Topo now has populated with the analysis device
 
-	queue = topo->return_subqueue();
+	queue = topo->rootQueue[0];
+	//queue = topo->();
 	context = topo->root_context ;
 	printf("Analysis Device Set Up Successfully\n");
 }
@@ -115,14 +160,17 @@ void analysis_device::inject_analysis()
 {
 	cl_int status;
 	//cl_setKernelArg(kernel,);
-
+	printf("Number of kernels %d\n",kernel_vec.size());
 
 	//!TODO Multiple kernels could be enqueued
-	for(int i = 0; i<n_analysis_kernels; i++)
+
+	for(int i = 0; i< kernel_vec.size() ; i++)
 	{
+
 		cl_event analysis_event;
-		status = clEnqueueNDRangeKernel(queue,analysis_kernels[i],
-					ws_dims,0,globalws,localws,
+		status = clEnqueueNDRangeKernel(queue,kernel_vec[i]->kernel,
+					kernel_vec[i]->dim_globalws,
+					0,kernel_vec[i]->globalws,kernel_vec[i]->localws,
 					len_analysis_waitlist,analysis_waitlist,
 					&analysis_event);
 		cl_errChk(status,"Enq inj analysis", EXITERROR);

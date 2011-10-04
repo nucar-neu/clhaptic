@@ -42,6 +42,11 @@ queue_id fission_topology::schedule_kernel()
 
 }
 
+cl_command_queue fission_topology::return_subqueue(int i)
+{
+	return subQueue[i];
+
+}
 /**
     \short Return a commamd queue to the calling application
 **/
@@ -172,7 +177,7 @@ void fission_topology::cl_CompileProgramRootDevices(char * kernelPath,
         status = clBuildProgram(root_program[i], 0, NULL,NULL, NULL, NULL);
         if(ad_errChk(status, "creating program")) {
             printf("status of build %d\n",status);
-            exit(1);
+           // exit(1);
         }
 
     }

@@ -11,45 +11,77 @@ compare_images::compare_images()
 	printf("Default Base Constructor \n");
 }
 
-void compare_images::assign_buffers(float * prev, float * next)
+void compare_images::init_buffers(size_t mem_size)
+{
+
+    cl_int status;
+    p_img = clCreateBuffer(getContext(),
+						CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR,
+						mem_size, NULL, &status);
+    ad_errChk(status, "Error allocating pinned memory", true);
+    n_img = clCreateBuffer(getContext(),
+						CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR,
+						mem_size, NULL, &status);
+	ad_errChk(status, "Error allocating pinned memory", true);
+
+	result.allocate_buffer(mem_size,getContext());
+}
+
+/**
+ * Assign data to the analysis device's buffers
+ * @param prev Previous image
+ * @param next Next image
+ * @param mem_size Data size
+ */
+void compare_images::assign_buffers_copy(float * prev, float * next, size_t mem_size)
 {
 	//! Uses the cl_map calls to map the pointers passed to the
 	//! buffer objects
+ 	copyHostToAd(p_img,prev,mem_size);
+	copyHostToAd(n_img,next,mem_size);
+
+	//p_img = NULL;
+	//n_img = NULL;
 }
+
 
 bool compare_images::set_pipeline_state()
 {
 	return ENABLED;
 }
-//! Configure the analysis kernel
+//! Configure the analysis kernel.
+//! At this stage the kernel should be allocated and compiled
 //! \param p_img Present Image
 //! \param p_img Next Image
-void compare_images::configure_analysis_kernel( cl_mem p_img, cl_mem n_img, int W, int H )
+void compare_images::configure_analysis_kernel( int W, int H )
 {
-
-	alloc_kernel_mem(2);
-	set_analysis_kernel("analysis-CLSource/compare_images.cl", "compare",0);
-	set_analysis_kernel("analysis-CLSource/compare_images.cl", "average",1);
+	printf("Setting Arguments and Config Analysis Kernel\n");
 
 	//! If present_image and next_image
+	kernel_vec.at(0)->dim_globalws = 2;
+	kernel_vec.at(0)->dim_localws = 2;
+	kernel_vec.at(0)->localws[0] = 16;
+	kernel_vec.at(0)->localws[1] = 16;
+	kernel_vec.at(0)->globalws[0] = W;
+	kernel_vec.at(0)->globalws[1] = H;
+	kernel_vec.at(0)->localmemsize = (sizeof(float)*(kernel_vec.at(0)->localws[0])*(kernel_vec.at(0)->localws[1]));
 
-	ws_dims = 2;
-	localws[0] = 16; localws[1] = 16;
-	globalws[0] = W; globalws[1] = H;
-
-
+	printf("Local mem size %d\t %d \n",W,H);
 	ad_setKernelArg(getKernel(0), 0,sizeof(cl_mem), p_img);
-	ad_setKernelArg(getKernel(0), 0,sizeof(cl_mem), n_img);
-	ad_setKernelArg(getKernel(0), 0, sizeof(cl_mem), opbuff.result_buffer);
+	ad_setKernelArg(getKernel(0), 1,sizeof(cl_mem), n_img);
+	ad_setKernelArg(getKernel(0), 2,sizeof(cl_mem), opbuff.buffer);
+	ad_setKernelArg(getKernel(0), 3,kernel_vec.at(0)->localmemsize, NULL);
+	ad_setKernelArg(getKernel(0), 4,sizeof(cl_int), (void *)&W);
+	ad_setKernelArg(getKernel(0), 5,sizeof(cl_int), (void *)&H);
 
-	ad_setKernelArg(getKernel(1), 0,sizeof(cl_mem), p_img);
-	ad_setKernelArg(getKernel(1), 0,sizeof(cl_mem), n_img);
-	ad_setKernelArg(getKernel(1), 0, sizeof(cl_mem), opbuff.result_buffer);
-
-//	cl_mapBuffer();
+	//	ad_setKernelArg(getKernel(1), 0,sizeof(cl_mem), p_img);
+	//	ad_setKernelArg(getKernel(1), 0,sizeof(cl_mem), n_img);
+	//	ad_setKernelArg(getKernel(1), 0, sizeof(cl_mem), opbuff.result_buffer);
+	//	cl_mapBuffer();
 
 
 }
+
 
 
 //! Input- Feature set

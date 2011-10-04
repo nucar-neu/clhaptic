@@ -26,7 +26,6 @@ cl_mem ad_allocBufferPinned(size_t mem_size,cl_context ctx )
 
 //! Set an argument for a OpenCL kernel
 /*!
-Set an argument for a OpenCL kernel
 
 \param kernel The kernel for which the argument is being set
 \param index The argument index

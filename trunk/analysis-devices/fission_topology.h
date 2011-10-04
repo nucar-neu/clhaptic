@@ -57,6 +57,7 @@ class fission_topology
 
 
     //! Interface functions
+    cl_command_queue return_subqueue(int );
     cl_command_queue return_subqueue();
     void add_problem_subqueue();
 
