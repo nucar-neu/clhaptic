@@ -1,0 +1,33 @@
+How to move from Assembla's private repo to Google Code
+
+#Download assembla's private tar.gz from the online interface
+
+#Create repo and add assemblas gz file as shown below.
+
+
+pmistry@eomer:~/repodump$ svnadmin create perhaad-palantir
+pmistry@eomer:~/repodump$ zcat ../Downloads/perhaad-palantir.gz  | svnadmin load perhaad-palantir/
+<<< Started new transaction, based on original revision 1
+     * adding path : trunk ... done.
+
+------- Committed revision 1 >>>
+
+<<< Started new transaction, based on original revision 2
+     * adding path : README ... done.
+
+------- Committed revision 2 >>>
+
+pmistry@eomer:~/repodump$ ls
+perhaad-palantir
+pmistry@eomer:~/repodump$ svnsync init https://palantir.googlecode.com/svn/ file:///home/pmistry/repodump/perhaad-palantir/ --username perhaad
+Copied properties for revision 0.
+
+
+
+pmistry@eomer:~/repodump$ svnsync sync https://palantir.googlecode.com/svn/ --username perhaad
+Committed revision 1.
+Copied properties for revision 1.
+Transmitting file data .
+Committed revision 2.
+Copied properties for revision 2.
+
