@@ -15,6 +15,10 @@
 
 #define UNKNOWNSIZE -999
 
+#define UNKNOWN -999
+
+bool rand_zero_or_one();
+
 //! Allocate pinned memory
 cl_mem ad_allocBufferPinned(size_t mem_size,cl_context ctx );
 

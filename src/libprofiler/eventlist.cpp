@@ -28,6 +28,7 @@ EventList::EventList()
 EventList::EventList(cl_context context, cl_command_queue commandQueue,
                      cl_device_id device, bool free_events)
 {
+	printf("Initializing the OpenCL Profiler \n");
     // We need to record some OpenCL state to get the timer values later
     this->context = context;
     this->commandQueue = commandQueue;

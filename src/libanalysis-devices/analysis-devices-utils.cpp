@@ -1,8 +1,38 @@
 #include <stdio.h>
 #include <CL/cl.h>
 #include "analysis-devices-utils.h"
+#include "eventtypes.h"
+#include <cmath>
+#include <iostream>
+#include <ctime>
 
 #define MAX_ERR_VAL 64
+
+/**
+ * A toy function that generates a random 0 or 1 sequence.
+ * Used to test profiler stuff
+ */
+bool rand_zero_or_one()
+{
+	srand((unsigned)time(NULL));
+	float val =((float) rand() / (RAND_MAX)) ;
+
+	int k = round(val);
+ 	if(k == 0)
+		return DISABLED;
+	else
+	{
+		if (k == 1)
+			return ENABLED;
+		else
+		{
+			printf("a bug");
+			exit(-1);
+		}
+
+	}
+
+}
 
 //! Allocate a buffer on device pinning the host memory at host_ptr
 /*!
@@ -37,7 +67,8 @@ void ad_setKernelArg(cl_kernel kernel, unsigned int index, size_t size,
 {
     cl_int status;
     status = clSetKernelArg(kernel, index, size, data);
-
+    if(status != CL_SUCCESS)
+    	printf("Error in Arg No %d\n",index);
     ad_errChk(status, "Setting kernel arg", true);
 }
 

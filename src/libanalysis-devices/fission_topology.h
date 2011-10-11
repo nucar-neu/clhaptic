@@ -16,16 +16,22 @@ class fission_topology
 {
   private:
 
-	bool * queue_profiling_status;
-
     //! Round robin scheduling
     int last_assigned_queue;
 
     ext_scheduler_type fission_scheduler;
 
   public:
+
+    //! Profiling flags, made so that you can handle queues in different states
+
+    bool * profiling_status;
+
+
     //!Default constructor to set the last assigned queue
     fission_topology();
+
+    char * cl_ReadSrcFile(char * filename);
 
     //! Regular OpenCL Object Topology
     cl_uint numRootDevices;
@@ -33,10 +39,17 @@ class fission_topology
     cl_device_type * root_device_type;
     cl_context root_context;
     cl_command_queue * rootQueue;
+
+
+    //! Subprogram. One per subdevice
+    cl_program * sub_program;
     cl_program * root_program;
     void cl_CompileProgramRootDevices(char * kernelPath,
                                     char * compileoptions, bool verbosebuild);
 
+    //! Compile for subdevices
+    void cl_CompileProgramSubDevice(char * kernelPath,
+			char * compileoptions, bool verbosebuild);
 
     //! Simple return - cpu or gpu queue interface
     cl_uint cpu_queue_no;
@@ -50,9 +63,6 @@ class fission_topology
     cl_device_id * subDevices ;
     cl_context subContext;
     cl_command_queue * subQueue;
-
-    //! Populate with more details  - program - one per subdevice
-    cl_program * sub_program;
 
 
     //! Interface functions
