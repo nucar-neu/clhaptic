@@ -320,8 +320,11 @@ void setup_fission(fission_topology * topo)
 
     topo->subDevices = (cl_device_id*)malloc( (topo->numSubDevices) * sizeof(cl_device_id));
     topo->subQueue= (cl_command_queue *)malloc( (topo->numSubDevices) * sizeof(cl_command_queue ));
+    topo->profiling_status = (bool *)malloc(sizeof(bool)*topo->numSubDevices);
+    for(int i=0;i < (topo->numSubDevices);i++)
+    	topo->profiling_status[i] = ENABLED;
 
-    if(NULL == (topo->subDevices))
+	if(NULL == (topo->subDevices))
         printf("Failed to allocate memory(subDevices)");
 
     status = pfn_clCreateSubDevicesEXT(topo->devices[device_touse],
@@ -342,22 +345,22 @@ void setup_fission(fission_topology * topo)
     topo->rootQueue[0] = clCreateCommandQueue(topo->root_context,
 					topo->root_device, CL_QUEUE_PROFILING_ENABLE, &status);
 
+
 	for(unsigned int i=0;i<(topo->numSubDevices);i++)
     {
-        printf("Init Sub-queue \t %d\n",i);
 
-#ifdef PROFILING
-
-        topo->subQueue[i] = clCreateCommandQueue(topo->subContext,
+        if(topo->profiling_status[i] == ENABLED)
+        {
+        	printf("Init Sub-queue \t %d Profiling ENABLED\n",i);
+        	topo->subQueue[i] = clCreateCommandQueue(topo->subContext,
 						topo->subDevices[i], CL_QUEUE_PROFILING_ENABLE, &status);
-
-#else
-
-        topo->subQueue[i] = clCreateCommandQueue(topo->subContext,
+        }
+        else
+        {
+        	printf("Init Sub-queue \t %d Profiling DISABLED\n",i);
+        	topo->subQueue[i] = clCreateCommandQueue(topo->subContext,
 						topo->subDevices[i], NULL, &status);
-
-#endif // PROFILING
-
+        }
         printf("Value of subdevice %p \n", topo->subDevices[i]);
 
         cl_errChk(status,"clCreateCommandQueue for subdevices failed.");

@@ -48,7 +48,7 @@ public:
 /**
  * A general analysis device base class.
  * Different analysis devices can be derived from this
- * class with their own kernels and so on.
+ * class with their own kernels and so on. \n
  * This class includes all the architectural state needed to define a device \n
  * Derived classes only need to define the kernels and the buffers.
 **/
@@ -56,6 +56,8 @@ class analysis_device
 {
 
 private:
+
+	bool device_state;
 
 	//! This could map to any OpenCL device or subdevice
 	cl_command_queue queue;
@@ -74,6 +76,8 @@ private:
 	int n_analysis_kernels;
 
 protected:
+	//! Read an OpenCL buffer and return pointer to host
+	void * read_global_mem_counter(cl_mem buff);
 
 	std::vector<kernel_object> kernel_vec;
 
@@ -85,6 +89,14 @@ protected:
 	int frequency;
 
 public:
+	void set_device_state(bool);
+	bool get_device_state();
+
+	//! Constructor
+	analysis_device();
+
+	void * mapBuffer(cl_mem mem, size_t mem_size, cl_mem_flags flags);
+
 	void copyHostToAd( cl_mem buff, void * mem, size_t mem_size);
 	//! Return the kernel object
 	cl_kernel getKernel(int k);
@@ -94,22 +106,25 @@ public:
 	//! Handles timing and the insertion of kernels
 	EventList * profiler;
 
-	result_buffer result;
+	//!Removed this declaration
+	//result_buffer result;
 
-	analysis_device();
 	void alloc_kernel_mem(int k);
 	kernel_object alloc_kernel_object();
 	//! Compile kernels for device
 	void build_analysis_kernel(char * filename, char * kernel_name, int pos);
 	//! Set up Fission, create root context and subqueues
-	void configure_analysis_device();
+	void configure_analysis_rootdevice();
+
+	void configure_analysis_subdevice();
 
 	//! Will be called by function defined in the derived class
-	void inject_analysis();
+	void inject_analysis(int kernel_to_inject = UNKNOWN);
 
 	char * generate_kernel_path(char * filename);
 	cl_context getContext();
 
+	void sync();
 };
 
 #endif //__ANALYSIS_DEVICE_

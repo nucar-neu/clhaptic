@@ -17,9 +17,11 @@ class compare_images : public analysis_device
 
 private:
 
+	float THRESHOLD;
 	result_buffer opbuff;
 	cl_mem p_img;
 	cl_mem n_img;
+
 public:
 	compare_images();
 
