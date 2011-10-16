@@ -1,7 +1,7 @@
 #include <CL/cl.h>
 #include <math.h>
 #include <eventlist.h>
-#include "analysis-routines.h"
+#include "device-compare-images.h"
 
 
 //enum image_similarity;

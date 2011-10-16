@@ -2,7 +2,7 @@ lib_LIBRARIES = libanalysis-devices.a
 
 libanalysis_devices_a_SOURCES = \
     analysis-devices.cpp \
-    analysis-routines.cpp \
+    device-compare-images.cpp \
     fissionutils.cpp \
     analysis-devices-utils.cpp \
     fission_topology.cpp
