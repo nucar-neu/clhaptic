@@ -11,7 +11,7 @@
 //! Default Constructor
 ProfilerConfig::ProfilerConfig()
 {
-	printf("Default Constructor Parameters\n");
+	printf("Default ProfilerConfig Parameters\n");
 
 	record_phases = ENABLED;
 	verbose_messages = ENABLED;
