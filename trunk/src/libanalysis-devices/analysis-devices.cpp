@@ -135,6 +135,28 @@ cl_context analysis_device::getContext()
 	return context;
 }
 
+
+void analysis_device::configure_analysis_subdevice_cpu(char * name )
+{
+
+	topo = new fission_topology;
+
+	setup_fission(topo);
+
+	//! Topo now has populated with the analysis device
+	queue = topo->subQueue[0];
+
+	//queue = topo->();
+	context = topo->subContext;
+	device = topo->subDevices[0];
+
+	// Initialize the profiler for the analysis device
+	char prof_name[]= "analysis_prof";
+	profiler = new EventList(context,queue,device,1,prof_name);
+
+}
+
+
 void analysis_device::sync()
 {
 	cl_int status;
@@ -195,32 +217,7 @@ void analysis_device::build_analysis_kernel(char * filename, char * kernel_name,
 
 }
 
-void analysis_device::configure_analysis_subdevice()
-{
-	topo = new fission_topology;
 
-	// Configuration Command for Device Fission
-	//    cl_device_partition_property_ext partitionPrty[3] =
-	//    {       CL_DEVICE_PARTITION_EQUALLY_EXT,
-	//            1,
-	//            CL_PROPERTIES_LIST_END_EXT
-	//   };
-	//setup_fission(topo,partitionPrty);
-
-	setup_fission(topo);
-
-	//! Topo now has populated with the analysis device
-	queue = topo->subQueue[0];
-	//queue = topo->();
-	context = topo->subContext ;
-	device = topo->subDevices[0];
-
-	// Initialize the profiler for the analysis device
-	profiler = new EventList(context,queue,device,1);
-
-	printf("Analysis Device Set Up Successfully\n");
-
-}
 void analysis_device::configure_analysis_rootdevice()
 {
 
@@ -248,6 +245,20 @@ void analysis_device::configure_analysis_rootdevice()
 	printf("Analysis Device Set Up Successfully\n");
 }
 
+//! Either create a new profiler object or use the input EventList provided
+void analysis_device::init_app_profiler(EventList * profiler_locn)
+{
+	if(profiler_locn == NULL)
+	{
+		printf("Init new App profiler");
+		app_profiler = new EventList(context,queue,device,TRUE);
+	}
+	else
+	{
+		printf("Init App profiler with %s \n",profiler_locn->get_profiler_name());
+		app_profiler = profiler_locn;
+	}
+}
 /**
  * @param Kernel number to run, no argument means all kernels in vector are run
  */
@@ -255,6 +266,7 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 {
 	cl_int status;
 
+	//profiler->samplePhaseChange();
 	//printf("Number of kernels %ld\n", kernel_vec.size());
 	//!TODO Multiple kernels could be enqueued
 

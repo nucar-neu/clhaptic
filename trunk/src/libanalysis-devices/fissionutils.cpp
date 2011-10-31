@@ -83,7 +83,7 @@ void list_all_opencl_devices()
 		status = clGetPlatformIDs(numPlatforms, platforms, NULL);
 
 		// Traverse the platforms array
-		printf("Checking For OpenCl Compatible Devices\n");
+
 		for(unsigned int i = 0; i < numPlatforms ; i++)
 		{
 			char pbuf[100];
@@ -136,6 +136,10 @@ void list_all_opencl_devices()
 	}
 }
 
+void setup_single_cpu()
+{
+
+}
 
 
 
@@ -236,7 +240,7 @@ void setup_fission(fission_topology * topo)
     scanf("%d %d",&platform_touse, &device_touse);
     printf("Using platform %d\t and device %d\n",platform_touse,device_touse);
 
-    cl_uint numDevices;
+    cl_uint numDevices = UNKNOWN;
 
 
 	status = clGetPlatformIDs(0, NULL, &numPlatforms);
