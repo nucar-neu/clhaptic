@@ -19,6 +19,9 @@ void EventList::markPhase(int u)
 	}
 }
 
+//! User API to compare phase changes.
+//! This is done instead of just showing EventList::analysePhaseChange
+//! so that we dont have to expose the profiling checking code to the user
 void EventList::samplePhaseChange()
 {
 	//Just Check for variation
@@ -26,14 +29,15 @@ void EventList::samplePhaseChange()
 	//! If profiling is ENABLED - go to EventList::analysePhaseChange()
 	if(record_profile == ENABLED)
 	{
-		//The conditional's added since we need atleast 2 phases to compare :)
+		//This conditional's added since we need atleast 2 phases to compare :)
 		if(control.get_latest_phase_no() >= 1 )
 			analysePhaseChange();
 	}
 	else
 	{
 		control.incDisabledDurationCount();
-		//!If record_profiling is DISABLED - Enable it again after ProfileConfig::max_disabled_duration
+		// !If record_profiling is DISABLED -
+		//! Enable it again after ProfileConfig::max_disabled_duration
 		if(control.getDisabledDurationCount() >= config.max_disabled_duration)
 		{
 			setProfilingStatus(ENABLED);
@@ -56,7 +60,7 @@ void EventList::analysePhaseChange()
 		return;
 	}
 
-//	printf("Latest 2 Phase Nos are %d\t %d\n",control.get_latest_phase_no(), control.get_latest_phase_no()-1);
+	//	printf("Latest 2 Phase Nos are %d\t %d\n",control.get_latest_phase_no(), control.get_latest_phase_no()-1);
 
 	PhaseTags p0 = control.read_tag(control.get_latest_phase_no() 	);
 	PhaseTags p1 = control.read_tag(control.get_latest_phase_no() -1 );
@@ -64,15 +68,16 @@ void EventList::analysePhaseChange()
 	printf("Latest 2 Phase Id Params \t %d \t %d\n",p0.id, p1.id);
 	if (p0.delta != p1.delta)
 	{
-		printf("We dont know of a good way to compare unequal length phases");
-		exit(-1);
+		printf("Profiler Name %s\t",profiler_name);
+		printf("Dont know how to compare unequal length phases - Skipping compare\n");
+		return ;
 	}
-// This is a wrong Lambda, Ignore this for now. Will try and add a better verification statement here
-//	if(p0.id != ( control.get_latest_phase_no()  ) || p1.id != (control.get_latest_phase_no() -1))
-//	{
-//		printf("Something is wrong\n");
-//		exit(-1);
-//	}
+	// This is a wrong Lambda, Ignore this for now. Will try and add a better verification statement here
+	//	if(p0.id != ( control.get_latest_phase_no()  ) || p1.id != (control.get_latest_phase_no() -1))
+	//	{
+	//		printf("Something is wrong\n");
+	//		exit(-1);
+	//	}
 
 	int compare_len = p0.delta;
 	int i0_start = p0.start;
@@ -95,7 +100,7 @@ void EventList::analysePhaseChange()
 		{
 			if(config.verbose_messages == ENABLED)
 			{
-				printf("\nLOG: ------------------------\n");
+				printf("\nLOG: %s ------------------------\n",profiler_name);
 				printf("LOG: Too much variation between same events in different phases\n");
 				printf("LOG: Exit Comparison and Carry On\n");
 				printf("------------------------\n");

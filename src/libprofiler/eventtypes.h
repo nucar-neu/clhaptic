@@ -22,6 +22,7 @@
 //! other macros
 #define FALSE 0
 
+#define DEFAULT_TIME_COMPARE_THRESHOLD 10000
 
 //! Create a type for the time to avoid confusion
 typedef cl_ulong cl_time;

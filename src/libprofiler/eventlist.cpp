@@ -19,15 +19,31 @@
 //! Default Constructor added to ENABLE record_profiling flag by default
 EventList::EventList()
 {
+	profiler_name = "Default Profiler";
     //! Done not to mess with Dana's interfaces
 	record_profile = ENABLED;
 }
-
+char * EventList::get_profiler_name()
+{
+	return profiler_name;
+}
 
 //! Constructor
 EventList::EventList(cl_context context, cl_command_queue commandQueue,
-                     cl_device_id device, bool free_events)
+                     cl_device_id device, bool free_events, char * name)
 {
+	if(name == NULL )
+	{
+		printf("No name for profiler \n");
+		profiler_name = "Default Profiler";
+	}
+	else
+	{
+		profiler_name = (char *)malloc(strlen(name)*sizeof(char));
+		strcpy(profiler_name,name);
+		printf("Profiler name %s \n",profiler_name);
+		//profiler_name = name;
+	}
 	printf("Initializing the OpenCL Profiler \n");
     // We need to record some OpenCL state to get the timer values later
     this->context = context;
@@ -45,7 +61,7 @@ EventList::EventList(cl_context context, cl_command_queue commandQueue,
     record_profile = ENABLED;
 
     //! Random small window to check time difference
-    config.time_threshold = 1000000;
+    config.time_threshold = DEFAULT_TIME_COMPARE_THRESHOLD;
 
     //! Change this parameter to DISABLED to shut out all  the PhaseControl stuff
     config.record_phases = ENABLED;

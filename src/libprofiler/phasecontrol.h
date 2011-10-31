@@ -123,7 +123,7 @@ public:
 	//! Set the number of disabled iterations to 0.
 	//! This is called when we set the EventList::record_profiling.
 	void resetDisabledDurationCount();
-	//! Number of phases that the profiler has been diabled for
+	//! Number of phases that the profiler has been disabled for
 	int getDisabledDurationCount();
 	//! Increment the no of disabled iterations.
 	//! More info about design of this interface in the declaration

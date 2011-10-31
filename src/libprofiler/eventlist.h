@@ -11,12 +11,12 @@
 #include <sstream>
 #include <string>
 
-
+#include "logger.h"
 #include "phasecontrol.h"
 #include "eventtypes.h"
 
 
-//! The main Event Handling Class.
+//! The main Event Handling Class. Part of libprofile in HAPTIC
 //! The main profiling state is in event_list and user_event_list
 //! The PhaseControl member object EventList::control manages the sampling granularity
 //! The ProfilerConfig member object is used to configure the profiler
@@ -24,12 +24,14 @@ class EventList
 {	
 
 public:
+
     //! Constructor
 	EventList();
 
     //! Constructor
     EventList(cl_context context, cl_command_queue commandQueue,
-                         cl_device_id device, bool free_events=true);
+                         cl_device_id device, bool free_events=true,
+                         char * name = NULL);
 
     //! Destructor
     ~EventList();
@@ -51,6 +53,8 @@ public:
     //! Writes event information to file
     void dumpEvents(char* path);
 
+    char * get_profiler_name();
+
     //! Prints the events to the screen
     void printEvents();
 
@@ -66,14 +70,18 @@ public:
     //! Adds a marker in PhaseControl tags vector
     void markPhase(int u);
 
+private:
+
+    //! Interface to PhaseControl object, calls EventList::analysePhaseChange()
+    void samplePhaseChange();
+
+
+	//! A name to keep track
+	char * profiler_name;
+
     //! Interface to the OpenCL application
     void analysePhaseChange();
 
-    //! Interface to PhaseControl object, called from EventList::analysePhaseChange()
-    void samplePhaseChange();
-
-private:	
-    
     //! Enable or Disable profiling (see typdef in eventtypes.h)
     bool record_profile ;
 
