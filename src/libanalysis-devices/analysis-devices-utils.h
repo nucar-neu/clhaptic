@@ -28,6 +28,7 @@ int ad_errChk(const cl_int status, const char * msg, bool exitOnErr = 0);
 
 void ad_sync(cl_command_queue queue);
 
+unsigned int idivup(unsigned int , unsigned int);
 
 #endif //ANALYSIS_DEVICES_UTILS_H
 

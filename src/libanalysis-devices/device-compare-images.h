@@ -22,10 +22,14 @@ private:
 	cl_mem p_img;
 	cl_mem n_img;
 
+	char * device_name;
+
+	int feature_count;
+
 public:
 	compare_images();
 
-	bool  set_pipeline_state();
+	bool get_analysis_result();
 
 	//! This function handles initial set up only
 	void initialize_analysis_kernels();
@@ -37,6 +41,7 @@ public:
 	void configure_analysis_kernel( int W, int H );
 
 
+	void track_feature_size();
 	//! Not used.
 	//! Has been disabled for now since the user cannot control when the
 	//! analysis is launched exactly

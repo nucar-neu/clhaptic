@@ -49,17 +49,24 @@ void compare_images::assign_buffers_copy(float * prev, float * next, size_t mem_
 }
 
 
+void compare_images::track_feature_size()
+{
 
-bool compare_images::set_pipeline_state()
+
+}
+
+bool compare_images::get_analysis_result()
 {
 	bool return_state;
 	//! Read results from processing
 	sync();
  	float * data = (float *)mapBuffer(opbuff.buffer, opbuff.mem_size,CL_MAP_READ);
-	float diff_value = 0.0f;
+ 	sync();
+ 	float diff_value = 0.0f;
 	//for(int i=0;i < (kernel_vec.at(0)->globalws[0]); i++)
 	for(int i=0;i < 100; i++)
 	{
+	//	printf("Data is %f \n", data[i]);
  		diff_value = diff_value + data[i];
 	}
 
@@ -70,6 +77,7 @@ bool compare_images::set_pipeline_state()
 	printf("Diff is %f \n",diff_value);
 	return return_state;
 }
+
 //! Configure the analysis kernel.
 //! At this stage the kernel should be allocated and compiled
 //! \param p_img Present Image

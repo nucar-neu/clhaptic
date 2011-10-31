@@ -76,6 +76,7 @@ private:
 	int n_analysis_kernels;
 
 protected:
+
 	//! Read an OpenCL buffer and return pointer to host
 	void * read_global_mem_counter(cl_mem buff);
 
@@ -89,6 +90,7 @@ protected:
 	int frequency;
 
 public:
+
 	void set_device_state(bool);
 	bool get_device_state();
 
@@ -97,14 +99,21 @@ public:
 
 	void * mapBuffer(cl_mem mem, size_t mem_size, cl_mem_flags flags);
 
+	void configure_analysis_subdevice_cpu(char * device_name = NULL);
+
 	void copyHostToAd( cl_mem buff, void * mem, size_t mem_size);
 	//! Return the kernel object
 	cl_kernel getKernel(int k);
 
 	~analysis_device();
+
 	//! Profiler for analysis device.
 	//! Handles timing and the insertion of kernels
 	EventList * profiler;
+
+	//! Profiler for application
+	//! Handles timing and the insertion of kernels
+	EventList * app_profiler;
 
 	//!Removed this declaration
 	//result_buffer result;
@@ -116,13 +125,15 @@ public:
 	//! Set up Fission, create root context and subqueues
 	void configure_analysis_rootdevice();
 
-	void configure_analysis_subdevice();
 
 	//! Will be called by function defined in the derived class
 	void inject_analysis(int kernel_to_inject = UNKNOWN);
 
 	char * generate_kernel_path(char * filename);
 	cl_context getContext();
+
+	//! Create a new profiler object
+	void init_app_profiler(EventList * profiler_locn = NULL);
 
 	void sync();
 };

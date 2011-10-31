@@ -169,6 +169,20 @@ int ad_errChk(const cl_int status, const char * msg, bool exitOnErr)
     return false;
 }
 
+//! \return the next highest value such that x/y = 0
+// This function that takes a positive integer 'value' and returns
+// the nearest multiple of 'multiple' (used for padding columns)
+unsigned int idivup(unsigned int value, unsigned int multiple) {
+
+   unsigned int remainder = value % multiple;
+
+   // Make the value a multiple of multiple
+   if(remainder != 0) {
+      value += (multiple-remainder);
+   }
+
+   return value;
+}
 
 
 //-------------------------------------------------------
