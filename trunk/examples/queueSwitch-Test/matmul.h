@@ -28,7 +28,7 @@ class matmul
 {
 
    public:
-
+	bool profiling_flag;
     //! N is the number of matmuls we will do
     unsigned int N;
     //! W is the size of each matmul
@@ -49,7 +49,7 @@ class matmul
 
     cl_kernel * multiplicationKernel;
 
-    void init_matmul(fission_topology * topo);
+    void init_matmul(fission_topology * topo, bool profiling_flag = ENABLED);
     void init_data(int W, int N );
 
     void matmul_ocl(fission_topology * topo);

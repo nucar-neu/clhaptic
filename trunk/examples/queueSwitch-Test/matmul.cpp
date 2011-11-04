@@ -23,16 +23,20 @@ void matmul::init_data(int mat_width, int N_problems)
 
 
 
-void matmul::init_matmul(fission_topology * topo)
+void matmul::init_matmul(fission_topology * topo, bool ip_profiling_flag)
 {
 
-    matmul_profiler = new EventList(
+	profiling_flag = ip_profiling_flag;
+
+	if(profiling_flag == ENABLED){
+		matmul_profiler = new EventList(
 							topo->root_context,
 							topo->rootQueue[0],
 							topo->devices[0],TRUE,
 							"matmul_profiler");
 
-
+		matmul_profiler->setProfilingStatus(profiling_flag);
+	}
     d_A = (cl_mem *)malloc(sizeof(cl_mem)*topo->numRootDevices);
     d_B = (cl_mem *)malloc(sizeof(cl_mem)*topo->numRootDevices);
     d_C = (cl_mem *)malloc(sizeof(cl_mem)*topo->numRootDevices);
@@ -103,7 +107,8 @@ void matmul::computekernel(int problemid, fission_topology * topo, cl_command_qu
                               &A[W*W*i], 0, NULL,
     //                              NULL);
                       &e0);
-    matmul_profiler->add(e0);
+    if(profiling_flag == ENABLED)
+    	matmul_profiler->add(e0);
     cl_errChk(status, "Error enq write d_A");
 
 
@@ -115,7 +120,8 @@ void matmul::computekernel(int problemid, fission_topology * topo, cl_command_qu
                               &B[W*W*i], 0, NULL,
     //                                  NULL);
                               &e1);
-    matmul_profiler->add(e1);
+    if(profiling_flag == ENABLED)
+    	matmul_profiler->add(e1);
     cl_errChk(status, "Error enq write d_B");
 
     cl_event  e2 ;
@@ -125,8 +131,10 @@ void matmul::computekernel(int problemid, fission_topology * topo, cl_command_qu
                                 0, NULL,
     //                                NULL);
                                 &e2);
+    if(profiling_flag == ENABLED)
+    	matmul_profiler->add(e2);
     cl_errChk(status, "Error running kernel");
-	matmul_profiler->add(e2);
+
 
     // Non-blocking copy of result from device to host
     cl_event  e3;
@@ -138,7 +146,8 @@ void matmul::computekernel(int problemid, fission_topology * topo, cl_command_qu
                               0, NULL,
     //                            NULL);
                               &e3);
-    matmul_profiler->add(e3);
+    if(profiling_flag == ENABLED)
+    	matmul_profiler->add(e3);
     cl_errChk(status, "Error enq read d_C");
 }
 
