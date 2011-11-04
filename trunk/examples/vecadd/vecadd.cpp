@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <CL/cl.h>
 #include <unistd.h>
-#include "../../profiler/eventlist.h"
+#include "eventlist.h"
 
 #define ELEMENTS 20*1024
 
@@ -96,14 +96,14 @@ int main(int argc, char** argv) {
    // put a pause here
    int platform = 0;
    int device = 0;
-   //printf("Enter Device Number: ");
-   //scanf("%d", &target);
+   printf("Enter Device Number: ");
+   scanf("%d %d", &platform, &device);
 
    //cl_int err;
    //context = clCreateContext(NULL, 1, &devices[target], NULL, NULL, &err);
 
    cl_context_properties cps[3] = {(size_t)CL_CONTEXT_PLATFORM,
-         (cl_context_properties)(platforms[0]), (size_t)0};
+         (cl_context_properties)(platforms[platform]), (size_t)0};
    cl_context_properties *cprops = cps;
 
    context = clCreateContextFromType(cprops, 

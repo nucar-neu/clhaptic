@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <CL/cl.h>
 #include <unistd.h>
-#include "../../profiler/eventlist.h"
+#include "eventlist.h"
 
 #define ELEMENTS 20*1024
 
