@@ -31,5 +31,6 @@ AC_CHECK_FUNCS([gethostname gettimeofday strstr])
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/libanalysis-devices/Makefile
-                 src/libprofiler/Makefile])
+                 src/libprofiler/Makefile
+                 src/libmisc/Makefile])
 AC_OUTPUT
