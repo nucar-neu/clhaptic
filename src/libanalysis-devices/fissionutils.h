@@ -5,11 +5,13 @@
 #include <string>
 #include <CL/cl.h>
 
-//#include "profiler/clutils.h"
+
 
 class fission_topology;
 
 void setup_fission(fission_topology *);
+
+void setup_root_queue(fission_topology * topo, bool enable_profiling );
 
 void setup_fission_pipeline(  fission_topology * topo);
 

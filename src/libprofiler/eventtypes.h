@@ -24,8 +24,7 @@
 
 #define DEFAULT_TIME_COMPARE_THRESHOLD 10000
 
-//! Create a type for the time to avoid confusion
-typedef cl_ulong cl_time;
+#include "timer.h"
 
 //! Structure for user event information (we can't use OpenCL user
 //! events because they don't support profiling information)
