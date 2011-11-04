@@ -30,7 +30,7 @@ int main(int argc, char ** argv)
     workload_wprof = new matmul[1];
 
     fission_topology * matmul_wprof = new fission_topology[1];
-    setup_root_queue(matmul_wprof, TRUE);
+    setup_root_queue(matmul_wprof, FALSE);
 
     int W_size ;
     int N_problems;
@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
 
     //! Matrix Mul Test
     workload_wprof->init_data(W_size,N_problems);
-    workload_wprof->init_matmul(matmul_wprof);
+    workload_wprof->init_matmul(matmul_wprof,DISABLED);
 
     clFlush(matmul_wprof->rootQueue[0]);
     clFinish(matmul_wprof->rootQueue[0]);
@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
     printf("\n \n WO profile case\n \n");
 
     workload_woprof->init_data(W_size,N_problems);
-    workload_woprof->init_matmul(matmul_wprof);
+    workload_woprof->init_matmul(matmul_woprof,DISABLED);
 
     // Finish non kernel related tasks
     clFlush(matmul_woprof->rootQueue[0]);
@@ -82,11 +82,12 @@ int main(int argc, char ** argv)
 
     getTime(&t_end);
 
-	printf("Wo profiling Time \t %d\t %d\t %d \n",t_start,t_end, (t_end-t_start));
+	printf("Wo profiling Time \t %lu \t %lu \t %lu \n",t_start,t_end, (t_end-t_start));
 
 
     printf("ran programs\n");
-    workload_wprof->matmul_profiler->dumpEvents("traces");
+
+//    workload_wprof->matmul_profiler->dumpEvents("traces");
 
 
 
