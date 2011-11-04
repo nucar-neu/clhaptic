@@ -136,8 +136,85 @@ void list_all_opencl_devices()
 	}
 }
 
-void setup_single_cpu()
+
+void setup_root_queue(fission_topology * topo,
+					bool enable_profiling = TRUE)
 {
+ 	cl_platform_id  * platforms ;
+	cl_int status;
+
+	int platform_touse;
+	int device_touse;
+	cl_uint numPlatforms;
+
+	list_all_opencl_devices();
+	printf("Enter platform and device\n");
+	scanf("%d %d",&platform_touse, &device_touse);
+	printf("Using platform %d\t and device %d\n",platform_touse,device_touse);
+
+	cl_uint numDevices;
+
+
+	status = clGetPlatformIDs(0, NULL, &numPlatforms);
+	printf("Number of platforms detected:%d\n", numPlatforms);
+	platforms = (cl_platform_id *)malloc(sizeof(cl_device_id)*numPlatforms);
+	status = clGetPlatformIDs(numPlatforms, platforms, NULL);
+
+
+	status = clGetDeviceIDs(platforms[platform_touse], CL_DEVICE_TYPE_ALL,
+							0, NULL, &numDevices);
+
+	if(cl_errChk(status,"Error in Getting Device Count\n")) exit(1);
+
+	printf("\n%d devices for %d Platform \n",numDevices, platform_touse);
+	topo->numRootDevices = numDevices;
+	topo->devices = (cl_device_id *)malloc(sizeof(cl_device_id)*numDevices);
+
+	status = clGetDeviceIDs(platforms[platform_touse],
+					CL_DEVICE_TYPE_ALL, numDevices,
+					topo->devices, NULL);
+
+	if(cl_errChk(status,"Error in Getting Devices\n")) exit(1);
+
+
+	//!Check if Device requested is a CPU or a GPU
+	cl_device_type dtype;
+	status = clGetDeviceInfo(topo->devices[device_touse],
+					CL_DEVICE_TYPE,
+					sizeof(dtype),
+					(void *)&dtype,
+					NULL);
+
+	if(cl_errChk(status,"Error in Getting Device Info\n")) exit(1);
+	if(dtype == CL_DEVICE_TYPE_GPU)
+		printf("Creating GPU Context\n");
+	else if (dtype == CL_DEVICE_TYPE_CPU)
+		printf("Creating CPU Context\n");
+	else perror("This Context Type Not Supported\n");
+
+	cl_context_properties cps[3] = {CL_CONTEXT_PLATFORM,
+		(cl_context_properties)(platforms[platform_touse]), 0};
+
+	//! Creating  root context - No subdevices needed here
+	cl_context_properties *cprops = cps;
+	topo->root_context = clCreateContextFromType(
+					cprops, (cl_device_type)dtype,
+					NULL, NULL, &status);
+	if(cl_errChk(status, "creating Root Context")) exit(1);
+	topo->rootQueue = (cl_command_queue * )malloc(sizeof(cl_command_queue)*1);
+	if(enable_profiling == TRUE)
+		topo->rootQueue[0] = clCreateCommandQueue(
+						topo->root_context,
+						topo->devices[device_touse],
+						CL_QUEUE_PROFILING_ENABLE, &status);
+	else
+		topo->rootQueue[0] = clCreateCommandQueue(
+						topo->root_context,
+						topo->devices[device_touse],
+						NULL, &status);
+
+
+	if(cl_errChk(status,"clCreateCommandQueue for subdevices failed."))exit(1);
 
 }
 

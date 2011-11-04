@@ -5,5 +5,5 @@ libprofiler_a_SOURCES = \
   eventlist.cpp \
   eventlist-phasecontrol.cpp
 
- 
+INCLUDES = -I$(top_srcdir)/src/libmisc
 

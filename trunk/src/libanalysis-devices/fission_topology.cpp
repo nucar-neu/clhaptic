@@ -164,7 +164,7 @@ void fission_topology::cl_CompileProgramRootDevices(char * kernelPath,
 {
 
 
-    printf("\n\Opencl compiler driver - Root Device\n");
+    printf("\nOpencl compiler driver - Root Device\n");
 
     cl_int status;
     FILE *fp;
