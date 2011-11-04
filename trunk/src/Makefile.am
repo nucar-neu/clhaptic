@@ -1,3 +1,4 @@
 SUBDIRS =\
 	libanalysis-devices \
-	libprofiler
+	libprofiler \
+	libmisc
