@@ -11,4 +11,13 @@
  * Download [http://code.google.com/p/clsurf clsurf]
 
  * Download [http://code.google.com/p/clhaptic clhaptic]
+ 
+{{{
+#Haptic Installation steps
 
+autoconf
+automake --add-missing
+./configure
+make
+
+}}}
