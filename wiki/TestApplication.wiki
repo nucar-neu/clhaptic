@@ -1,13 +1,14 @@
 #summary How to use the clhaptic profiling system with clsurf
+#labels Phase-Deploy
 
-= Introduction =
+= Dependencies =
 
-Add your content here.
+ # An OpenCL Implementation of AMD or Nvidia
+ # OpenCV to run clsurf
 
+= Setup Steps =
 
-= Details =
+ * Download [http://code.google.com/p/clsurf clsurf]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+ * Download [http://code.google.com/p/clhaptic clhaptic]
+
