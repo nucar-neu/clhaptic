@@ -1,3 +1,5 @@
+{{{
+
 @inproceedings{Mistry2011,
   author = {Mistry, Perhaad and Gregg, Chris and Rubin, Norman and Kaeli, David and Hazelwood, Kim},
   title = { Analyzing program flow within a many-kernel OpenCL application },
@@ -16,3 +18,5 @@
   address = { New York, NY, USA },
   keywords = { GPGPU, OpenCL, SURF, computer vision, heterogeneous computing, performance tools, profiling },
  }
+
+}}}
