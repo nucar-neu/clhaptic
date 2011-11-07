@@ -2,8 +2,28 @@
 
 = Introduction =
 
-
-
-= Details =
+The [http://www.khronos.org/registry/cl/ | OpenCL specification] provides a 'cl_event' which can be used to store profiling information
 
 = Event States = 
+
+Example of OpenCL events
+
+||*Command State* || *Description* ||
+||CL_QUEUED || Command is in a queue ||
+||CL_SUBMITTED || Command has been submitted to device ||
+||CL_RUNNING || Command is currently executing on device ||
+||CL_COMPLETE || Command has finished execution ||
+
+{{{
+
+cl_int clEnqueueNDRangeKernel (
+    cl_command_queue queue,
+    cl_kernel kernel, cl_uint work_dim,
+    const size_t *global_work_offset,
+    const size_t *global_work_size,
+    const size_t *local_work_size,
+    cl_uint num_events_in_wait_list,
+    const cl_event *event_wait_list,
+    cl_event *event)
+
+}}}

@@ -16,8 +16,11 @@
 #Haptic Installation steps
 
 autoconf
+# This may be necessary to generate Install.sh
 automake --add-missing
 ./configure
 make
 
 }}}
+
+

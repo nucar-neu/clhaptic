@@ -2,6 +2,14 @@
 
 = Introduction =
 
-Source code changes
+The application does require source code changes.
+
+However an interceptor style system is presently in the works
 
 = Details =
+
+{{{
+EventList * profiler = new EventList;
+profiler->add();
+
+}}}
