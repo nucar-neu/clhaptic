@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.67])
 AC_INIT
-AM_INIT_AUTOMAKE(analysis, 1.0)
+AM_INIT_AUTOMAKE(haptic, 1.0)
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_HEADERS([config.h])
 
@@ -32,5 +32,6 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/libanalysis-devices/Makefile
                  src/libprofiler/Makefile
+		 src/librules/Makefile
                  src/libmisc/Makefile])
 AC_OUTPUT

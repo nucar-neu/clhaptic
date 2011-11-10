@@ -8,5 +8,5 @@ libanalysis_devices_a_SOURCES = \
     fission_topology.cpp
 
 
-INCLUDES = -I$(top_srcdir)/src/libprofiler -I$(top_srcdir)/src/libmisc
+INCLUDES = -I$(top_srcdir)/src/libprofiler -I$(top_srcdir)/src/libmisc -I$(top_srcdir)/src/librules
 
