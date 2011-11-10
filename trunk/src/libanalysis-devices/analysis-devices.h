@@ -4,6 +4,7 @@
 #include <CL/cl.h>
 #include "analysis-devices-utils.h"
 #include "fissionutils.h"
+#include "ad_rule_vec.h"
 #include <eventlist.h>
 
 //! A kernel object containing all the necessary parameters to launch a kernel.
@@ -75,6 +76,7 @@ private:
 
 	int n_analysis_kernels;
 
+	ad_rule_vec analysis_rules;
 protected:
 
 	//! Read an OpenCL buffer and return pointer to host
@@ -90,6 +92,7 @@ protected:
 	int frequency;
 
 public:
+	void test_analysis_rule();
 
 	void set_device_state(bool);
 	bool get_device_state();
@@ -136,6 +139,7 @@ public:
 	void init_app_profiler(EventList * profiler_locn = NULL);
 
 	void sync();
-};
+
+ };
 
 #endif //__ANALYSIS_DEVICE_
