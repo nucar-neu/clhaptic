@@ -1,3 +1,6 @@
+#ifndef __ANALYSIS_RULE__
+#define __ANALYSIS_RULE__
+
 #include <CL/cl.h>
 #include <vector>
 
@@ -35,3 +38,6 @@ public:
 	bool test_rule(cl_context ctx, cl_command_queue queue);
 
 };
+
+
+#endif

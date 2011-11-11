@@ -28,10 +28,10 @@ AC_TYPE_SIZE_T
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gethostname gettimeofday strstr])
 
-AC_CONFIG_FILES([Makefile
+AC_CONFIG_FILES([Makefile         
                  src/Makefile
                  src/libanalysis-devices/Makefile
                  src/libprofiler/Makefile
-		 src/librules/Makefile
+                 src/librules/Makefile
                  src/libmisc/Makefile])
 AC_OUTPUT

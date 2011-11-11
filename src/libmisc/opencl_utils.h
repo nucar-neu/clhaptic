@@ -27,4 +27,7 @@ void ad_setKernelArg(cl_kernel kernel, unsigned int index, size_t size,
 void list_all_opencl_devices();                     
 
 
+unsigned int idivup(unsigned int , unsigned int);
+
+
 #endif // _OPENCL_UTILS_H_
