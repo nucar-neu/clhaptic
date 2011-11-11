@@ -76,8 +76,10 @@ private:
 
 	int n_analysis_kernels;
 
-	ad_rule_vec analysis_rules;
 protected:
+
+	ad_rule_vec analysis_rules;
+
 
 	//! Read an OpenCL buffer and return pointer to host
 	void * read_global_mem_counter(cl_mem buff);

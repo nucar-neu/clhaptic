@@ -98,3 +98,9 @@ cl_int ad_rule::add(rule_type t, cl_mem ip_buff, float ip_value)
 	mem_size = sizeof(float);
 }
 
+
+void ad_rule::print_rule_details()
+{
+
+
+}

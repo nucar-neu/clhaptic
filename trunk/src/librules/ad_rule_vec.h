@@ -1,3 +1,6 @@
+#ifndef __ANALYSIS_RULE_VEC_
+#define __ANALYSIS_RULE_VEC_
+
 #include <CL/cl.h>
 #include "ad_rule.h"
 
@@ -12,3 +15,5 @@ public:
 	int active_rule_count();
 };
 
+
+#endif
