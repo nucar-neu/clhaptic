@@ -44,4 +44,4 @@ EventList * profiler = new EventList(context, cmdQueue, devices[0]);
 
 == Visualization ==
 
-You can use some of the provided Python utilities for visualization purposes. Please see the file PlotEvents.py for visualization steps
+You can use some of the provided Python utilities for visualization purposes. Please see the file [http://code.google.com/p/clhaptic/source/browse/trunk/profiler-tools/PlotEvents.py PlotEvents.py] for visualization steps
