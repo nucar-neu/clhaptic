@@ -119,7 +119,7 @@ void EventList::add(cl_event event, const char* name, const char* type)
 	if(record_profile == ENABLED)
 	{
 		//printf("add a event %d \n",foo-1);
-	//	foo = foo+1;
+		//	foo = foo+1;
 		control.add_event();
 		// Count of events (not thread safe)
 		static unsigned short eventCtr = 0;  // Max of 5 characters
@@ -318,12 +318,18 @@ char* EventList::createFilenameWithTimestamp()
 }
 
 // Create a file and dump the event information
-void EventList::dumpEvents(char* path) 
+void EventList::dumpEvents(char* path, char * ip_filename)
 {
     FILE* fp =  NULL;
-
+    char * filename;
     // Construct a filename based on the current time
-    char* filename = this->createFilenameWithTimestamp();
+    if (ip_filename == NULL)
+    	filename = this->createFilenameWithTimestamp();
+    else
+    {
+    	filename =  (char *)malloc(strlen(ip_filename)*sizeof(char));
+    	strcpy(filename, ip_filename);
+    }
 
     // Create string to hold the path + filename
     char* fullpath = new char[strlen(path)+strlen(filename)+1];
@@ -433,6 +439,8 @@ void EventList::dumpEvents(char* path)
 		long end_t = getEventValue(this->event_list[event_list.size() - 1]->event,CL_PROFILING_COMMAND_END)	- this->gpu_timer_start;
 		printf("Time first %lu \t last %lu \t Diff %f \n",start_t, end_t, float((end_t - start_t))/(1000.0f*1000.0f) );
     }
+    else
+    	printf("WARNING - No events Detected\n ");
 
     fclose(fp);
 
