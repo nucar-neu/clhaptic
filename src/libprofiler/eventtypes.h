@@ -9,18 +9,8 @@
 #ifndef EVENTTYPES_H_
 #define EVENTTYPES_H_
 
-//! Macro to enable / disable profiling
-#define ENABLED 1
+#include "opencl_utils.h"
 
-//! Macro to enable / disable profiling
-#define DISABLED 0
-
-
-//! other macros
-#define TRUE 1
-
-//! other macros
-#define FALSE 0
 
 #define DEFAULT_TIME_COMPARE_THRESHOLD 10000
 

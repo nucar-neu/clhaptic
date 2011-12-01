@@ -51,7 +51,7 @@ public:
     static cl_int clSetUserEventStatus(cl_user_event, cl_int execution_status);
 
     //! Writes event information to file
-    void dumpEvents(char* path);
+    void dumpEvents(char* path, char * ip_filename = NULL);
 
     char * get_profiler_name();
 
