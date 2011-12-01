@@ -2,7 +2,8 @@
 #define _FISSION_TOPLOGY_H_
 
 #include <CL/cl.h>
-#include <eventtypes.h>
+
+#include "opencl_utils.h"
 
 
 #define ROUND_ROBIN  0x100
@@ -31,7 +32,6 @@ class fission_topology
     //!Default constructor to set the last assigned queue
     fission_topology();
 
-    char * cl_ReadSrcFile(char * filename);
 
     //! Regular OpenCL Object Topology
     cl_uint numRootDevices;
