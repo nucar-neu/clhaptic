@@ -33,5 +33,6 @@ AC_CONFIG_FILES([Makefile
                  src/libanalysis-devices/Makefile
                  src/libprofiler/Makefile
                  src/librules/Makefile
-                 src/libmisc/Makefile])
+                 src/libmisc/Makefile
+                 src/libtopology/Makefile])
 AC_OUTPUT
