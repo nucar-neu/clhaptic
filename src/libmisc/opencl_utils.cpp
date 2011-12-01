@@ -34,6 +34,56 @@ bool rand_zero_or_one()
 }
 
 
+char * cl_ReadSrcFile(char * kernelPath)
+{
+    FILE *fp;
+    cl_int status;
+
+    char *source;
+    long int size;
+
+    printf("Compiler Function: Kernel file is: %s\n", kernelPath);
+
+    fp = fopen(kernelPath, "rb");
+    if(!fp) {
+        printf("Could not open kernel file\n");
+        exit(-1);
+    }
+    status = fseek(fp, 0, SEEK_END);
+    if(status != 0) {
+        printf("Error seeking to end of file\n");
+        exit(-1);
+    }
+    size = ftell(fp);
+    printf("size:**********************%d\n",size);
+    if(size < 0) {
+        printf("Error getting file position\n");
+        exit(-1);
+    }
+    /*status = fseek(fp, 0, SEEK_SET);
+    if(status != 0) {
+    printf("Error seeking to start of file\n");
+    exit(-1);
+    }*/
+    rewind(fp);
+
+    source = (char *)malloc(size + 1);
+    // fill with NULLs
+    for (int i=0;i<size+1;i++) source[i]='\0';
+    if(source == NULL) {
+        printf("Error allocating space for the kernel source\n");
+        exit(-1);
+    }
+
+    //fread(source, size, 1, fp);   // add error checking here
+    fread(source,1,size,fp);
+    source[size] = '\0';
+    fclose(fp);
+
+    return source;
+}
+
+
 //! OpenCl error code list
 /*!
     An array of character strings used to give the error corresponding to the error code \n

@@ -5,6 +5,18 @@
 
 #include <CL/cl.h>
 
+//! Macro to enable / disable profiling
+#define ENABLED 1
+
+//! Macro to enable / disable profiling
+#define DISABLED 0
+
+
+//! other macros
+#define TRUE 1
+
+//! other macros
+#define FALSE 0
 
 #define EXITERROR 1
 
@@ -26,6 +38,7 @@ void ad_setKernelArg(cl_kernel kernel, unsigned int index, size_t size,
 
 void list_all_opencl_devices();                     
 
+char * cl_ReadSrcFile(char * kernelPath);
 
 unsigned int idivup(unsigned int , unsigned int);
 
