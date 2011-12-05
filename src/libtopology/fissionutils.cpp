@@ -5,9 +5,6 @@
 #include <string.h>
 #include <iostream>
 
-
-
-//#include "analysis-devices-utils.h"
 #include "fission_topology.h"
 #include "fissionutils.h"
 
