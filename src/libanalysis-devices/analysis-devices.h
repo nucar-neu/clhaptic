@@ -100,7 +100,7 @@ public:
 
 	char * generate_kernel_path(char * filename);
 	cl_context getContext();
-
+	cl_command_queue getCommandQueue();
 	//! Create a new profiler object
 	void init_app_profiler(EventList * profiler_locn = NULL);
 

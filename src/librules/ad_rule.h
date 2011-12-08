@@ -7,8 +7,14 @@
 #include "opencl_utils.h"
 #include "rule_type.h"
 
-//! Define a rule that is checked by an analysis-device object.
-//! The OpenCL device specific things like cl_context and a cl_command_queue are passed to the object
+//!
+//! \brief Define a rule that is checked by an analysis-device object.
+//! The OpenCL device specific things like cl_context and a
+//! cl_command_queue are passed to the object.
+//! Private functions added since high level code, may not know exact rule.
+//! The functions apply_rule_exact() and so on are going to be usually unused
+//! since the rule only stores information about what should be done.
+//! We let the value profiler decide the best OpenCL method to do it.
 class ad_rule
 {
 private:
@@ -24,13 +30,21 @@ private:
 	//! Added for checking more than one value
 	size_t mem_size;
 
-	//! Private functions added since high level code, may not know exact rule
-	bool apply_rule_exact(cl_context , cl_command_queue );
-	bool apply_rule_less_than(cl_context , cl_command_queue );
-	bool apply_rule_more_than(cl_context , cl_command_queue );
+	//! These will mostly not be used (See ad_rule )
+	bool inline apply_rule_exact(cl_context , cl_command_queue );
+	bool inline apply_rule_less_than(cl_context , cl_command_queue );
+	bool inline apply_rule_more_than(cl_context , cl_command_queue );
+
 public:
 
 	ad_rule();
+	// Note that the inlining in this case wont work unless you
+	// move the implementation of the function to the header because, gcc cannot see the code to inline it here.
+	// For more details, google "inline function  used but never defined"
+	rule_type get_type();
+	float get_target_value();
+	cl_mem get_target_buff();
+	size_t get_target_mem_size();
 	cl_int add();
 	cl_int add(rule_type, cl_mem, float val);
 	//! Interface to call all the apply_ functions

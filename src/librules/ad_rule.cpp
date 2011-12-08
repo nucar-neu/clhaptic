@@ -3,9 +3,12 @@
 #include "ad_rule.h"
 #include "rule_type.h"
 
+//! See documentation on why, inline has been removed
 
 bool ad_rule::test_rule(cl_context ctx, cl_command_queue queue)
 {
+	printf("WARNING\nThis shouldnt be used  with the profilers\n");
+
 	if(type == VALUE_EXACT)
 	{
 		if(apply_rule_exact(ctx,queue) )
@@ -88,6 +91,30 @@ ad_rule::ad_rule()
 cl_int ad_rule::add()
 {
 
+}
+
+//inline
+rule_type ad_rule::get_type()
+{
+	return type;
+}
+
+//inline
+cl_mem ad_rule::get_target_buff()
+{
+	return target_buffer;
+}
+
+//inline
+float ad_rule::get_target_value()
+{
+	return target_value;
+}
+
+//inline
+size_t ad_rule::get_target_mem_size()
+{
+	return mem_size;
 }
 
 cl_int ad_rule::add(rule_type t, cl_mem ip_buff, float ip_value)

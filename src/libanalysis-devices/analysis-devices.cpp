@@ -135,6 +135,15 @@ cl_context analysis_device::getContext()
 	return context;
 }
 
+/**
+ *
+ * @return Command Queue for derived classes
+ */
+cl_command_queue analysis_device::getCommandQueue()
+{
+	return queue;
+}
+
 
 void analysis_device::configure_analysis_subdevice_cpu(char * name )
 {
@@ -258,6 +267,7 @@ void analysis_device::init_app_profiler(EventList * profiler_locn)
 		printf("Init App profiler with %s \n",profiler_locn->get_profiler_name());
 		app_profiler = profiler_locn;
 	}
+
 }
 /**
  * @param Kernel number to run, no argument means all kernels in vector are run

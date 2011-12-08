@@ -2,7 +2,7 @@
 #include "fissionutils.h"
 
 //! This class is different from the fission_topology.
-//! Created because all devices are equal unlike the fission case with subdevices and so on
+//! Created because all devices are equal unlike the fission case with subdevices and so on.
 class multidevice_topology
 {
   private:

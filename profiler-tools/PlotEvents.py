@@ -64,7 +64,7 @@ class EventGroup:
       return "Event group for %s" % self.filename	
    
    def getDescription(self):
-      return self.infolist[0].__str__()
+      return self.filename.__str__()
 
 # print usage information
 def printUsage():

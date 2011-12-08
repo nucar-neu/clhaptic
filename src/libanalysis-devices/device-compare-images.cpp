@@ -13,8 +13,15 @@ compare_images::compare_images():analysis_device()
 {
 	printf("Derived Class - Compare Images Device\n");
 	THRESHOLD = 2.0f;
+	//! Initialize the profiler and the rule database.
+	v_profiler = new value_profiler[1];
+	ruledb = new ad_rule_vec[1];
 }
 
+void compare_images::init_value_profiler()
+{
+	v_profiler->init(getCommandQueue(),getContext());
+}
 void compare_images::init_buffers(size_t mem_size)
 {
 
@@ -49,9 +56,10 @@ void compare_images::assign_buffers_copy(float * prev, float * next, size_t mem_
 }
 
 
-void compare_images::track_feature_size()
+void compare_images::track_feature_count()
 {
-
+	v_profiler->test_rule(ruledb->get_rule(0));
+	//ruledb->apply_rule(getContext(),queue, 0);
 
 }
 
@@ -103,6 +111,13 @@ void compare_images::configure_analysis_kernel( int W, int H )
 	ad_setKernelArg(getKernel(0), 5,sizeof(cl_int), (void *)&H);
 
 
+}
+
+void compare_images::set_feature_count_threshold(int k,cl_mem d_count)
+{
+	ad_rule threshold_rule;
+	threshold_rule.add(VALUE_MORE_THAN,d_count,float(k));
+	ruledb->add_rule(threshold_rule);
 }
 
 
