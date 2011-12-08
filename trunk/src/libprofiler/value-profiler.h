@@ -43,20 +43,29 @@ private:
 	std::vector<result_buffer> locn;
 	std::vector<value_profiler_config> config_locn;
 
-
 	//! Location of memory
 	cl_mem buff;
 	int offset;
 
 	cl_context ctx;
 	cl_command_queue access_queue;
+
+	inline bool apply_rule_exact(ad_rule ip_rule);
+	inline bool apply_rule_less_than(ad_rule ip_rule);
+	inline bool apply_rule_more_than(ad_rule ip_rule);
+
 public:
+
+	//! Assign context and queue
+	void init(cl_command_queue, cl_context);
 
 	void set_buffer(cl_mem ip_buff, int ip_offset);
 	void check_value_on_host(ad_rule );
 	void check_value_on_device();
 	void record_result_on_host();
 	void record_result_on_device();
+
+	bool test_rule(ad_rule ip_rule);
 };
 
 #endif //  __VALUE_PROFILER_

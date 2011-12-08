@@ -6,7 +6,7 @@
 
 #include "fissionutils.h"
 #include "analysis-devices.h"
-
+#include "ad_rule_vec.h"
 
 #ifndef __COMPARE_DEVICE_
 #define __COMPARE_DEVICE_
@@ -27,6 +27,12 @@ private:
 	int feature_count;
 
 public:
+	//! Value profiler.
+	value_profiler * v_profiler;
+
+	//! A rule database
+	ad_rule_vec * ruledb;
+
 	compare_images();
 
 	bool get_analysis_result();
@@ -40,8 +46,10 @@ public:
 	//! Should be called before the analysis_device::inject_analysis() function
 	void configure_analysis_kernel( int W, int H );
 
+	void track_feature_count();
 
-	void track_feature_size();
+	//! No of features to act on.
+	void set_feature_count_threshold(int k,cl_mem d_count);
 	//! Not used.
 	//! Has been disabled for now since the user cannot control when the
 	//! analysis is launched exactly
@@ -49,6 +57,7 @@ public:
 			cl_mem present_image, cl_mem next_image,
 			int W, int H );
 
+	void init_value_profiler();
 };
 
 #endif // __COMPARE_DEVICE_
