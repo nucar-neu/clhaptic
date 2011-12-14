@@ -35,6 +35,8 @@ struct value_profiler_config
 	int write_method;
 };
 
+//! The problem with the present methodology is simple type information.
+
 class value_profiler
 {
 
@@ -43,12 +45,10 @@ private:
 	std::vector<result_buffer> locn;
 	std::vector<value_profiler_config> config_locn;
 
-	//! Location of memory
-	cl_mem buff;
-	int offset;
+	//! Location of memory. This has been removed because all buffers should be checked via their respective rule
+	//cl_mem buff;
+	//int offset;
 
-	cl_context ctx;
-	cl_command_queue access_queue;
 
 	inline bool apply_rule_exact(ad_rule ip_rule);
 	inline bool apply_rule_less_than(ad_rule ip_rule);
@@ -56,6 +56,10 @@ private:
 
 public:
 
+	cl_context ctx;
+	cl_command_queue access_queue;
+
+	value_profiler();
 	//! Assign context and queue
 	void init(cl_command_queue, cl_context);
 

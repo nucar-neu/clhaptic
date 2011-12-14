@@ -105,6 +105,10 @@ cl_mem ad_rule::get_target_buff()
 	return target_buffer;
 }
 
+int ad_rule::get_target_offset()
+{
+	return buffer_offset;
+}
 //inline
 float ad_rule::get_target_value()
 {

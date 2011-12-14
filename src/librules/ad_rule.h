@@ -43,6 +43,7 @@ public:
 	// For more details, google "inline function  used but never defined"
 	rule_type get_type();
 	float get_target_value();
+	int get_target_offset();
 	cl_mem get_target_buff();
 	size_t get_target_mem_size();
 	cl_int add();

@@ -25,13 +25,12 @@ private:
 	char * device_name;
 
 	int feature_count;
+	 //application_state;
 
 public:
 	//! Value profiler.
 	value_profiler * v_profiler;
 
-	//! A rule database
-	ad_rule_vec * ruledb;
 
 	compare_images();
 
