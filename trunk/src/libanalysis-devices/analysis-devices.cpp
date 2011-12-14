@@ -320,10 +320,10 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 //! Call the vector of analysis_device::analysis_rules to apply the rules
 void analysis_device::test_all_analysis_rule()
 {
-	for(int i = 0; i < analysis_rules.active_rule_count();i++)
-	{
-		analysis_rules.apply_rule(context,queue,i);
-	}
+	//for(int i = 0; i < analysis_rules.active_rule_count();i++)
+	//{
+		//analysis_rules.apply_rule(context,queue,i);
+//	}
 
 }
 

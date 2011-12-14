@@ -9,6 +9,11 @@
 #include "eventlist.h"
 #include "value-profiler.h"
 
+#define ANALYSIS_APPLIED 0010
+
+#define ANALYSIS_NOT_APPLIED 0011
+
+typedef  cl_uint system_state;
 
 /**
  * A general analysis device base class.
@@ -21,7 +26,7 @@ class analysis_device
 {
 
 private:
-
+	//! Whether the analysis_device is ENABLED or DISABLED
 	bool device_state;
 
 	//! This could map to any OpenCL device or subdevice
@@ -40,10 +45,9 @@ private:
 
 	int n_analysis_kernels;
 
+	system_state application_state;
+
 protected:
-
-	ad_rule_vec analysis_rules;
-
 
 	//! Read an OpenCL buffer and return pointer to host
 	void * read_global_mem_counter(cl_mem buff);
@@ -58,6 +62,9 @@ protected:
 	int frequency;
 
 public:
+	//! A rule database
+	ad_rule_vec * ruledb;
+
 	void test_all_analysis_rule();
 
 	void set_device_state(bool);

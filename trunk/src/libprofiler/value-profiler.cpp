@@ -13,7 +13,9 @@ void value_profiler::check_value_on_host(ad_rule rule)
 	cl_int status;
 	int mem_size;
 	void * ptr = clEnqueueMapBuffer(access_queue,
-						buff,CL_TRUE,NULL,offset,mem_size,
+						rule.get_target_buff(),
+						CL_TRUE,NULL,
+						rule.get_target_offset(),mem_size,
 						0,NULL,NULL,&status);
 	ad_errChk(status,"Snoop value on host", TRUE);
 	rule.test_rule(ctx,access_queue);
@@ -77,14 +79,15 @@ inline bool value_profiler::apply_rule_less_than(ad_rule ip)
 inline bool value_profiler::apply_rule_more_than(ad_rule ip)
 {
 
-	int * target_ptr;
+	float * target_ptr;
 	cl_int status;
-	target_ptr = (int *)clEnqueueMapBuffer(access_queue,ip.get_target_buff(),
+	target_ptr = (float *)clEnqueueMapBuffer(access_queue,ip.get_target_buff(),
 							CL_TRUE, CL_MEM_READ_ONLY,
 							0,ip.get_target_mem_size(),0,
 							NULL,NULL,&status);
 	ad_errChk(status,"error mapping buffer");
-	printf("Value seen from memory %d \n", target_ptr[0]);
+	clFinish(access_queue);
+	printf("Value seen from memory %f \n", target_ptr[0]);
 	getchar();
 	if(float(target_ptr[0]) > ip.get_target_value())
 		return RULE_SUCCESS;
@@ -92,6 +95,10 @@ inline bool value_profiler::apply_rule_more_than(ad_rule ip)
 		return RULE_FAILURE;
 }
 
+value_profiler::value_profiler()
+{
+	printf("Default Constructor - Value profiler\n");
+}
 
 void value_profiler::init(cl_command_queue ip_queue, cl_context ip_ctx)
 {
