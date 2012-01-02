@@ -20,6 +20,7 @@ class result_buffer
 
 
 public:
+	float variation;
 	int offset;
 	size_t mem_size;
 	result_buffer();
@@ -35,20 +36,19 @@ struct value_profiler_config
 	int write_method;
 };
 
-//! The problem with the present methodology is simple type information.
-
+//! The problem with the present methodology is simple type information which is missing.
 class value_profiler
 {
 
 private:
 
+	bool profiler_state;
 	std::vector<result_buffer> locn;
 	std::vector<value_profiler_config> config_locn;
 
 	//! Location of memory. This has been removed because all buffers should be checked via their respective rule
 	//cl_mem buff;
 	//int offset;
-
 
 	inline bool apply_rule_exact(ad_rule ip_rule);
 	inline bool apply_rule_less_than(ad_rule ip_rule);

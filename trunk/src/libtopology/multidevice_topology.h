@@ -1,3 +1,6 @@
+#ifndef MULTIDEVICE_TOPOLOGY_H
+#define MULTIDEVICE_TOPOLOGY_H
+
 #include "opencl_utils.h"
 #include "fissionutils.h"
 
@@ -40,3 +43,5 @@ class multidevice_topology
     queue_id schedule_kernel();
     //!TODO Command Queue Migration
 };
+
+#endif //MULTIDEVICE_TOPOLOGY_H

@@ -22,7 +22,67 @@ static clCreateSubDevicesEXT_fn pfn_clCreateSubDevicesEXT = NULL;
     }
 
 
+//! setup a queue of a certain type given a context
+void setup_gpu_queue(cl_context ip_ctx,
+				fission_topology * topo,
+				bool enable_profiling = TRUE)
+{
+	list_all_opencl_devices();
+	topo->root_context = ip_ctx;
+	//Look for the number of devices
+	size_t numDevices;
+	cl_int status = clGetContextInfo (
+			topo->root_context,	CL_CONTEXT_DEVICES,
+		 	0,NULL,&numDevices);
+	ad_errChk(status, "error getting no of devices");
 
+	topo->devices = (cl_device_id *)malloc(numDevices);
+	// Populate the device array
+	status = clGetContextInfo (topo->root_context,
+					CL_CONTEXT_DEVICES,
+					sizeof(cl_device_id),topo->devices,&numDevices);
+	ad_errChk(status, "error getting no of devices");
+
+	numDevices = numDevices/sizeof(cl_device_id);
+
+	printf("Number of devices for Ctx %d\n",numDevices);
+	topo->numRootDevices = numDevices;
+	topo->rootQueue = (cl_command_queue * )malloc(sizeof(cl_command_queue)*(topo->numRootDevices));
+	printf("Set subdevices to 0\n");
+	topo->numSubDevices = 0;
+	for(cl_uint i = 0 ;i < (topo->numRootDevices); i++)
+	{
+
+		//!Check if Device requested is a CPU or a GPU
+		cl_device_type dtype;
+		status = clGetDeviceInfo(topo->devices[i],
+						CL_DEVICE_TYPE,
+						sizeof(dtype),
+						(void *)&dtype,
+						NULL);
+
+		if(cl_errChk(status,"Error in Getting Device Info\n")) exit(1);
+		//! Choose the first GPU
+		if(dtype == CL_DEVICE_TYPE_GPU)
+		{
+			topo->gpu_queue_no = i;
+			if(enable_profiling == TRUE)
+				topo->rootQueue[0] = clCreateCommandQueue(
+								topo->root_context,
+								topo->devices[i],
+								CL_QUEUE_PROFILING_ENABLE, &status);
+			else
+				topo->rootQueue[0] = clCreateCommandQueue(
+								topo->root_context,
+								topo->devices[i],
+								NULL, &status);
+			if(cl_errChk(status,"Error Creating CQ\n")) exit(-1);
+			return;
+		}
+	}
+	printf("No GPU could be found");
+	exit(-1);
+}
 
 void setup_root_queue(fission_topology * topo,
 					bool enable_profiling = TRUE)

@@ -205,9 +205,14 @@ void analysis_device::build_analysis_kernel(char * filename, char * kernel_name,
 {
  	topo->cl_CompileProgramRootDevices(filename,NULL,0);
  	topo->cl_CompileProgramSubDevice(filename,NULL,0);
-	//TODO Fix this constant allocation
- 	analysis_program =  topo->sub_program[0];
 
+	//TODO Fix this constant allocation
+ 	if(opencl_arch != ROOT_DEVICE)
+ 		analysis_program =  topo->sub_program[0];
+ 	else
+ 		analysis_program = topo->root_program[0];
+
+ 	//if()
  	cl_int status;
 
  	//!analysis_kernels[pos] = clCreateKernel(analysis_program,kernel_name,&status);
@@ -226,6 +231,16 @@ void analysis_device::build_analysis_kernel(char * filename, char * kernel_name,
 
 }
 
+void analysis_device::configure_analysis_device_gpu(cl_context ctx)
+{
+	topo = new fission_topology;
+	setup_gpu_queue(ctx,topo, TRUE);
+	context = ctx;
+	queue = topo->rootQueue[topo->gpu_queue_no];
+	device = topo->devices[topo->gpu_queue_no];
+	profiler = new EventList(context,queue,device,1);
+	opencl_arch = ROOT_DEVICE;
+}
 
 void analysis_device::configure_analysis_rootdevice()
 {

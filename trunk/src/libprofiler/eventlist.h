@@ -7,13 +7,12 @@
 #include <iostream>
 #include <vector>
 
-
 #include <sstream>
 #include <string>
 
-#include "logger.h"
 #include "phasecontrol.h"
 #include "eventtypes.h"
+#include "logger.h"
 
 
 //! The main Event Handling Class. Part of libprofile in HAPTIC

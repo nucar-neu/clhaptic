@@ -113,13 +113,11 @@ EventList::~EventList()
 // Add an OpenCL event to the OpenCL event list
 void EventList::add(cl_event event, const char* name, const char* type)
 {
-	static int foo = 0;
-	foo = foo + 1;
+
 	//! Only adds a event to the EventList::event_list members if EventList::record_profile is ENABLED
 	if(record_profile == ENABLED)
 	{
 		//printf("add a event %d \n",foo-1);
-		//	foo = foo+1;
 		control.add_event();
 		// Count of events (not thread safe)
 		static unsigned short eventCtr = 0;  // Max of 5 characters
@@ -486,7 +484,7 @@ cl_time EventList::getCurrentTime() {
 
 // Retrieve the specified timer value from the event
 cl_time EventList::getEventValue(cl_event event,
-                                            cl_profiling_info param_name)
+								cl_profiling_info param_name)
 {
     
     cl_int status; 
@@ -496,8 +494,10 @@ cl_time EventList::getEventValue(cl_event event,
     // Get the requested timer value from OpenCL
     status = clGetEventProfilingInfo(event, param_name, sizeof(cl_ulong),
                                      &value, NULL);
+
     if(status != CL_SUCCESS) {
-        printf("Profiling error\n");
+        //printf("Profiling error (eventlist.cpp)\n");
+        ad_errChk(status,"Profiling Error");
         exit(-1);
     }
 
