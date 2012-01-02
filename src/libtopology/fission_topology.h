@@ -5,7 +5,6 @@
 
 #include "opencl_utils.h"
 
-
 #define ROUND_ROBIN  0x100
 
 typedef unsigned int ext_scheduler_type;

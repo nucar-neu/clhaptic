@@ -13,7 +13,14 @@
 
 #define ANALYSIS_NOT_APPLIED 0011
 
-typedef  cl_uint system_state;
+#define FISSION_SUBDEVICE 0020
+
+#define ROOT_DEVICE 0021
+
+typedef cl_uint system_state;
+
+
+typedef cl_uint device_type;
 
 /**
  * A general analysis device base class.
@@ -26,6 +33,8 @@ class analysis_device
 {
 
 private:
+
+	char device_name[128];
 	//! Whether the analysis_device is ENABLED or DISABLED
 	bool device_state;
 
@@ -46,6 +55,8 @@ private:
 	int n_analysis_kernels;
 
 	system_state application_state;
+
+	device_type opencl_arch;
 
 protected:
 
@@ -101,6 +112,7 @@ public:
 	//! Set up Fission, create root context and subqueues
 	void configure_analysis_rootdevice();
 
+	void configure_analysis_device_gpu(cl_context );
 
 	//! Will be called by function defined in the derived class
 	void inject_analysis(int kernel_to_inject = UNKNOWN);

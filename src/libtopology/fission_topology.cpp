@@ -15,7 +15,7 @@ fission_topology::fission_topology()
 {
     last_assigned_queue = 0;
     fission_scheduler = ROUND_ROBIN;
-    numSubDevices = UNKNOWNSIZE;
+    numSubDevices = 0;
 }
 
 
@@ -231,7 +231,7 @@ void fission_topology::cl_CompileProgramSubDevice(char * kernelPath,
 							char * compileoptions, bool verbosebuild)
 {
 
-    printf("\n\Opencl compiler driver - Subdevices\n");
+    printf("\nOpencl compiler driver - Subdevices\n");
 
     cl_int status;
 
@@ -243,6 +243,7 @@ void fission_topology::cl_CompileProgramSubDevice(char * kernelPath,
     sub_program= (cl_program * )malloc(sizeof(cl_program)*numSubDevices);
     if(root_program == NULL)
     	printf("malloc error");
+    printf("No of subdevices %d\n",numSubDevices);
     for(int i=0; i< numSubDevices; i++)
     {
     	printf("compiling Subprogram\n");

@@ -95,7 +95,7 @@ void EventList::analysePhaseChange()
 
 		cl_time t1 = getEventDelta(event1,CL_PROFILING_COMMAND_END) -
 					 getEventDelta(event1,CL_PROFILING_COMMAND_START);
-		printf("T0 \t %ld \t \t T1 \t %ld \n",t0,t1);
+		printf("%d\t T0 \t %ld \t \t T1 \t %ld \n",i,t0,t1);
 		if( abs(t0 - t1) > config.time_threshold)
 		{
 			if(config.verbose_messages == ENABLED)
@@ -108,6 +108,7 @@ void EventList::analysePhaseChange()
  			break;
 		}
 	}
+	printf("leaving phase compare loop\n");
 	// profiling disabled only if all the phase differences are smaller than threshold
 	if(i == (compare_len ))
 	{

@@ -78,26 +78,38 @@ inline bool value_profiler::apply_rule_less_than(ad_rule ip)
 
 inline bool value_profiler::apply_rule_more_than(ad_rule ip)
 {
-
-	float * target_ptr;
-	cl_int status;
-	target_ptr = (float *)clEnqueueMapBuffer(access_queue,ip.get_target_buff(),
-							CL_TRUE, CL_MEM_READ_ONLY,
-							0,ip.get_target_mem_size(),0,
-							NULL,NULL,&status);
-	ad_errChk(status,"error mapping buffer");
-	clFinish(access_queue);
-	printf("Value seen from memory %f \n", target_ptr[0]);
-	getchar();
-	if(float(target_ptr[0]) > ip.get_target_value())
-		return RULE_SUCCESS;
-	else
+	if(profiler_state == DISABLED)
+	{
+		printf("WARNING: Profiler Disabled");
 		return RULE_FAILURE;
+	}
+	else
+	{
+		float * target_ptr;
+		cl_int status;
+		target_ptr = (float *)clEnqueueMapBuffer(access_queue,ip.get_target_buff(),
+								CL_TRUE, CL_MEM_READ_ONLY,
+								0,ip.get_target_mem_size(),0,
+								NULL,NULL,&status);
+		ad_errChk(status,"error mapping buffer");
+		clFinish(access_queue);
+		printf("Value seen from memory %f \n", target_ptr[0]);
+		//getchar();
+		if(float(target_ptr[0]) > ip.get_target_value())
+			return RULE_SUCCESS;
+		else
+			return RULE_FAILURE;
+	}
 }
 
 value_profiler::value_profiler()
 {
 	printf("Default Constructor - Value profiler\n");
+	//! Disable value_profiler by default since it is a high overhead operation
+	//profiler_state = DISABLED;
+	profiler_state = ENABLED;
+
+
 }
 
 void value_profiler::init(cl_command_queue ip_queue, cl_context ip_ctx)
@@ -108,33 +120,37 @@ void value_profiler::init(cl_command_queue ip_queue, cl_context ip_ctx)
 
 bool value_profiler::test_rule(ad_rule ip_rule)
 {
-	if(ip_rule.get_type() == VALUE_EXACT)
+	if(profiler_state == ENABLED)
 	{
-		if(apply_rule_exact(ip_rule ) )
-			return RULE_SUCCESS;
-		else
-			return RULE_FAILURE;
+		if(ip_rule.get_type() == VALUE_EXACT)
+		{
+			if(apply_rule_exact(ip_rule ) )
+				return RULE_SUCCESS;
+			else
+				return RULE_FAILURE;
+		}
+		if(ip_rule.get_type()  == VALUE_LESS_THAN)
+		{
+			if(apply_rule_less_than(ip_rule ))
+				return RULE_SUCCESS;
+			else
+				return RULE_FAILURE;
+		}
+		if(ip_rule.get_type() == VALUE_MORE_THAN)
+		{
+			if(apply_rule_more_than(ip_rule ))
+				return RULE_SUCCESS;
+			else
+				return RULE_FAILURE;
+		}
+		if(ip_rule.get_type()  == UNDEFINED_RULE)
+		{
+			printf("rule not defined yet");
+			exit(-1);
+		}
 	}
-	if(ip_rule.get_type()  == VALUE_LESS_THAN)
+	else
 	{
-		if(apply_rule_less_than(ip_rule ))
-			return RULE_SUCCESS;
-		else
-			return RULE_FAILURE;
-	}
-
-	if(ip_rule.get_type() == VALUE_MORE_THAN)
-	{
-		if(apply_rule_more_than(ip_rule ))
-			return RULE_SUCCESS;
-		else
-			return RULE_FAILURE;
-	}
-	if(ip_rule.get_type()  == UNDEFINED_RULE)
-	{
-		printf("rule not defined yet");
-		exit(-1);
+		printf("Warning - Value profiler not enabled");
 	}
 }
-
-

@@ -82,7 +82,7 @@ bool compare_images::get_analysis_result()
 		return_state = ENABLED;
 	else
 		return_state = DISABLED;
-	//printf("Diff is %f \n",diff_value);
+	printf("Diff is %f \n",diff_value);
 	return return_state;
 }
 

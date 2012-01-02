@@ -42,7 +42,7 @@ char * cl_ReadSrcFile(char * kernelPath)
     char *source;
     long int size;
 
-    printf("Compiler Function: Kernel file is: %s\n", kernelPath);
+    printf("Kernel file: %s\n", kernelPath);
 
     fp = fopen(kernelPath, "rb");
     if(!fp) {
