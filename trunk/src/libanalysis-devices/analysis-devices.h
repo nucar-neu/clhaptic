@@ -88,6 +88,12 @@ public:
 
 	void configure_analysis_subdevice_cpu(char * device_name = NULL);
 
+	//! Set up Fission, create root context and subqueues
+	void configure_analysis_rootdevice();
+
+	void configure_analysis_device_gpu(cl_context );
+
+
 	void copyHostToAd( cl_mem buff, void * mem, size_t mem_size);
 	//! Return the kernel object
 	cl_kernel getKernel(int k);
@@ -109,11 +115,6 @@ public:
 	kernel_object alloc_kernel_object();
 	//! Compile kernels for device
 	void build_analysis_kernel(char * filename, char * kernel_name, int pos);
-	//! Set up Fission, create root context and subqueues
-	void configure_analysis_rootdevice();
-
-	void configure_analysis_device_gpu(cl_context );
-
 	//! Will be called by function defined in the derived class
 	void inject_analysis(int kernel_to_inject = UNKNOWN);
 

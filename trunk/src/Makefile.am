@@ -9,6 +9,8 @@ lib_LIBRARIES = libhaptic.a
 
 #libhaptic_a_LDFLAGS = -c
 
+INCLUDES = $(AMDAPPSDKROOT)/include
+
 libhaptic_a_LIBADD = \
 	$(top_builddir)/src/libanalysis-devices/*.o \
 	$(top_builddir)/src/libprofiler/*.o \

@@ -7,9 +7,7 @@
 #include "fissionutils.h"
 #include "analysis-devices.h"
 
-//! This define makes the utility functions point to their ad_ counterparts.
-//! This is done since SURF and the Palantir both use the same set of utility functions
-#define cl_errChk ad_errChk
+
 
 void * analysis_device::mapBuffer(cl_mem mem, size_t mem_size, cl_mem_flags flags)
 {
@@ -224,7 +222,7 @@ void analysis_device::build_analysis_kernel(char * filename, char * kernel_name,
  	k->dim_localws = 2;
  	k->name = kernel_name;
  	k->kernel = clCreateKernel(analysis_program,kernel_name,&status);
- 	cl_errChk(status, "Creating Analysis Kernel",EXITERROR);
+ 	ad_errChk(status, "Creating Analysis Kernel",EXITERROR);
  	kernel_vec.push_back(k);
  	n_analysis_kernels ++;
 
@@ -234,10 +232,13 @@ void analysis_device::build_analysis_kernel(char * filename, char * kernel_name,
 void analysis_device::configure_analysis_device_gpu(cl_context ctx)
 {
 	topo = new fission_topology;
+
 	setup_gpu_queue(ctx,topo, TRUE);
-	context = ctx;
+	printf("Queue is %d\n",topo->gpu_queue_no);
 	queue = topo->rootQueue[topo->gpu_queue_no];
 	device = topo->devices[topo->gpu_queue_no];
+	context = topo->root_context;
+	printf("Context is %p \t %p \n", context, topo->root_context);
 	profiler = new EventList(context,queue,device,1);
 	opencl_arch = ROOT_DEVICE;
 }
@@ -307,7 +308,7 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 						0,kernel_vec[i]->globalws,kernel_vec[i]->localws,
 						len_analysis_waitlist,analysis_waitlist,
 						&analysis_event);
-			cl_errChk(status,"Enq inj analysis", EXITERROR);
+			ad_errChk(status,"Enq inj analysis", EXITERROR);
 			profiler->add(analysis_event);
 
 		}
@@ -324,7 +325,7 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 					kernel_vec.at(kernel_to_inject)->localws,
 					len_analysis_waitlist,analysis_waitlist,
 					&analysis_event);
-		cl_errChk(status,"Enq inj analysis", EXITERROR);
+		ad_errChk(status,"Enq inj analysis", EXITERROR);
 		profiler->add(analysis_event);
 
 	}
@@ -337,8 +338,8 @@ void analysis_device::test_all_analysis_rule()
 {
 	//for(int i = 0; i < analysis_rules.active_rule_count();i++)
 	//{
-		//analysis_rules.apply_rule(context,queue,i);
-//	}
+	//	analysis_rules.apply_rule(context,queue,i);
+	//}
 
 }
 

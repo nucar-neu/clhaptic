@@ -29,6 +29,8 @@
 
 bool rand_zero_or_one();
 
+cl_mem ad_allocBufferPinned(size_t mem_size,cl_context ctx );
+
 int ad_errChk(const cl_int status, const char * msg, bool exitOnErr = 0);
 
 bool check_for_extensions(char * ext_name, int deviceId, cl_device_id * device_list);
