@@ -7,5 +7,4 @@ libanalysis_devices_a_SOURCES = \
     monitored-queue.cpp
 
 
-INCLUDES = -I$(top_srcdir)/src/libprofiler -I$(top_srcdir)/src/libmisc -I$(top_srcdir)/src/librules -I$(top_srcdir)/src/libtopology
-
+INCLUDES = -I$(top_srcdir)/src/libprofiler -I$(top_srcdir)/src/libmisc -I$(top_srcdir)/src/librules -I$(top_srcdir)/src/libtopology -I$(AMDAPPSDKROOT)/include

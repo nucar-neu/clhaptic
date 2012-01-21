@@ -16,6 +16,7 @@ fission_topology::fission_topology()
     last_assigned_queue = 0;
     fission_scheduler = ROUND_ROBIN;
     numSubDevices = 0;
+    n_devices_requested = 0;
 }
 
 
@@ -233,8 +234,7 @@ void fission_topology::cl_CompileProgramSubDevice(char * kernelPath,
 
     printf("\nOpencl compiler driver - Subdevices\n");
 
-    cl_int status;
-
+    cl_int status = CL_SUCCESS;
     char *source = cl_ReadSrcFile(kernelPath);
 
     //printf("source:%s",source);

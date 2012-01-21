@@ -23,6 +23,10 @@ class fission_topology
 
   public:
 
+    //! Number of devices requested for this topology.
+    //! Added to stop fission_topology members from creating command queues for every subdevice
+    int n_devices_requested;
+
     //! Profiling flags, made so that you can handle queues in different states
 
     bool * profiling_status;

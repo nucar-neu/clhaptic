@@ -156,6 +156,27 @@ const char *cl_err_msg[MAX_ERR_VAL] = {
     "CL_INVALID_MIP_LEVEL",               //-62
     "CL_INVALID_GLOBAL_WORK_SIZE"};       //-63
 
+
+//! Allocate a buffer on device pinning the host memory at host_ptr
+/*!
+    \param mem_size Size of memory in bytes
+    \return Returns a cl_mem object that points to pinned memory on the host
+*/
+cl_mem ad_allocBufferPinned(size_t mem_size,cl_context ctx )
+{
+    cl_mem mem;
+    cl_int status;
+
+   	mem = clCreateBuffer(ctx, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR,
+                         mem_size, NULL, &status);
+
+
+    ad_errChk(status, "Error allocating pinned memory", true);
+
+    return mem;
+}
+
+
 //! OpenCl Error checker
 /*!
 Checks for error code as per cl_int returned by OpenCl

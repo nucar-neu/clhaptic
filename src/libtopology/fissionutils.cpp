@@ -23,7 +23,7 @@ static clCreateSubDevicesEXT_fn pfn_clCreateSubDevicesEXT = NULL;
 
 
 //! setup a queue of a certain type given a context
-void setup_gpu_queue(cl_context ip_ctx,
+void setup_gpu_queue(cl_context  ip_ctx,
 				fission_topology * topo,
 				bool enable_profiling = TRUE)
 {
@@ -35,7 +35,7 @@ void setup_gpu_queue(cl_context ip_ctx,
 			topo->root_context,	CL_CONTEXT_DEVICES,
 		 	0,NULL,&numDevices);
 	ad_errChk(status, "error getting no of devices");
-
+	printf("Context in setup root is %p",topo->root_context);
 	topo->devices = (cl_device_id *)malloc(numDevices);
 	// Populate the device array
 	status = clGetContextInfo (topo->root_context,
@@ -45,10 +45,10 @@ void setup_gpu_queue(cl_context ip_ctx,
 
 	numDevices = numDevices/sizeof(cl_device_id);
 
-	printf("Number of devices for Ctx %d\n",numDevices);
+	printf("Number of devices in Ctx: %d\n",numDevices);
 	topo->numRootDevices = numDevices;
 	topo->rootQueue = (cl_command_queue * )malloc(sizeof(cl_command_queue)*(topo->numRootDevices));
-	printf("Set subdevices to 0\n");
+	//printf("Set subdevices to 0\n");
 	topo->numSubDevices = 0;
 	for(cl_uint i = 0 ;i < (topo->numRootDevices); i++)
 	{
@@ -67,12 +67,14 @@ void setup_gpu_queue(cl_context ip_ctx,
 		{
 			topo->gpu_queue_no = i;
 			if(enable_profiling == TRUE)
-				topo->rootQueue[0] = clCreateCommandQueue(
+			{
+				topo->rootQueue[i] = clCreateCommandQueue(
 								topo->root_context,
 								topo->devices[i],
 								CL_QUEUE_PROFILING_ENABLE, &status);
+ 			}
 			else
-				topo->rootQueue[0] = clCreateCommandQueue(
+				topo->rootQueue[i] = clCreateCommandQueue(
 								topo->root_context,
 								topo->devices[i],
 								NULL, &status);
@@ -332,7 +334,6 @@ void setup_fission(fission_topology * topo)
     // Get number of sub-devices
 
     INIT_CL_EXT_FCN_PTR(clCreateSubDevicesEXT);
-    printf("no of subdevices %d\n",topo->numSubDevices);
     topo->root_device = topo->devices[device_touse];
 
     status = pfn_clCreateSubDevicesEXT(topo->devices[device_touse],

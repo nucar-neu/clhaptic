@@ -6,4 +6,4 @@ libmisc_a_SOURCES = \
     opencl_utils.cpp
 
 
-
+INCLUDES = -I$(AMDAPPSDKROOT)/include

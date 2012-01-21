@@ -1,8 +1,9 @@
-#include <CL/cl.h>
+
 #include <math.h>
 #include <eventlist.h>
 #include "device-compare-images.h"
 
+#include <CL/cl.h>
 
 //enum image_similarity;
 
@@ -12,7 +13,7 @@
 compare_images::compare_images():analysis_device()
 {
 	printf("Derived Class - Compare Images Device\n");
-	THRESHOLD = 2.0f;
+	THRESHOLD = 149.0f;
 	//! Initialize the profiler and the rule database.
 	v_profiler = new value_profiler[1];
 	ruledb = new ad_rule_vec[1];
@@ -72,9 +73,10 @@ bool compare_images::get_analysis_result()
  	sync();
  	float diff_value = 0.0f;
 	//for(int i=0;i < (kernel_vec.at(0)->globalws[0]); i++)
-	for(int i=0;i < 100; i++)
+ 	int i;
+	for(i=0; i < 10; i++)
 	{
-	//	printf("Data is %f \n", data[i]);
+		printf("Data is %f \n", data[i]);
  		diff_value = diff_value + data[i];
 	}
 
@@ -94,7 +96,6 @@ void compare_images::configure_analysis_kernel( int W, int H )
 {
 //	printf("Setting Arguments and Config Analysis Kernel\n");
 
-	//! If present_image and next_image
 	kernel_vec.at(0)->dim_globalws = 2;
 	kernel_vec.at(0)->dim_localws = 2;
 	kernel_vec.at(0)->localws[0] = 16;

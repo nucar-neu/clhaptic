@@ -6,5 +6,5 @@ libtopology_a_SOURCES = \
   multidevice_topology.cpp
 
 
-INCLUDES = -I$(top_srcdir)/src/libmisc
+INCLUDES = -I$(top_srcdir)/src/libmisc -I$(AMDAPPSDKROOT)/include
 
