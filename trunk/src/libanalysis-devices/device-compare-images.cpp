@@ -60,7 +60,6 @@ void compare_images::assign_buffers_copy(float * prev, float * next, size_t mem_
 void compare_images::track_feature_count()
 {
 	v_profiler->test_rule(ruledb->get_rule(0));
-	//ruledb->apply_rule(getContext(),queue, 0);
 
 }
 

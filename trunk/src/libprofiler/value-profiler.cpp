@@ -23,8 +23,15 @@ void value_profiler::check_value_on_host(ad_rule rule)
 
 }
 
-void value_profiler::check_value_on_device()
+void value_profiler::check_value_on_device(ad_rule rule)
 {
+	cl_mem dest;
+	cl_int status;
+
+	ad_setKernelArg(test_kernel,0,sizeof(cl_mem),(void *)&(rule.get_target_buff()));
+	//! Action to be done
+	ad_setKernelArg(test_kernel,1,sizeof(cl_int),(void *)&(rule.get_target_buff()));
+	clEnqueueTask(access_queue,test_kernel,0,NULL,NULL);
 
 }
 void value_profiler::record_result_on_host()
@@ -112,10 +119,26 @@ value_profiler::value_profiler()
 
 }
 
-void value_profiler::init(cl_command_queue ip_queue, cl_context ip_ctx)
+
+void value_profiler::init(cl_command_queue ip_queue, cl_context ip_ctx, cl_device_id ip_device )
 {
 	access_queue = ip_queue;
 	ctx = ip_ctx;
+	if(ip_device != NULL)
+	{
+		access_device = ip_device;
+		cl_program test_program ;
+		test_program = cl_CompileProgram("test_kernel.cl",NULL,TRUE,ctx,access_device);
+		cl_int status = CL_SUCCESS;
+		test_kernel = clCreateKernel(test_program,"test_function",&status);
+		ad_errChk(status,"Creating Checking task",EXITERROR);
+	}
+	else
+	{
+		printf("Unknown Device passed to value profiler\n Cannot compile kernel\n");
+		exit(-1);
+
+	}
 }
 
 bool value_profiler::test_rule(ad_rule ip_rule)

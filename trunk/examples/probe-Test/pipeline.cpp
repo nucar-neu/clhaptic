@@ -30,13 +30,18 @@ int main(int argc, char ** argv)
 {
 	compute_pipeline * some_pipe = new compute_pipeline[1];
 	some_pipe->devices[0] = new test_device_0[1];
-	some_pipe->devices[0]->configure_device(0);
+	some_pipe->devices[0]->configure_device(1);
+	
+	//! This is a legit cast becuase the allocation was done of the type test_device_0
+	//! So the object allocated in the devices array is of type derived class
+	test_device_0 * p1 = (test_device_0 * )(some_pipe->devices[0]);
+    p1->random_device_0_crap();
 
 	some_pipe->devices[1] = new test_device_1[1];
-	some_pipe->devices[1]->configure_device(1);
+	some_pipe->devices[1]->configure_device(2);
 
 	some_pipe->devices[2] = new test_device_2[1];
-	some_pipe->devices[2]->configure_device(2);
+	some_pipe->devices[2]->configure_device(0);
 
 	some_pipe->run();
 }

@@ -42,6 +42,7 @@ class value_profiler
 
 private:
 
+	cl_kernel test_kernel;
 	bool profiler_state;
 	std::vector<result_buffer> locn;
 	std::vector<value_profiler_config> config_locn;
@@ -57,15 +58,16 @@ private:
 public:
 
 	cl_context ctx;
+	cl_device_id access_device;
 	cl_command_queue access_queue;
 
 	value_profiler();
-	//! Assign context and queue
-	void init(cl_command_queue, cl_context);
-
+	//! Assign context and queue and device if necessary
+	void init(cl_command_queue, cl_context,cl_device_id = NULL);
+	//! An alternate non rule method to set a buffer to profile
 	void set_buffer(cl_mem ip_buff, int ip_offset);
 	void check_value_on_host(ad_rule );
-	void check_value_on_device();
+	void check_value_on_device(ad_rule);
 	void record_result_on_host();
 	void record_result_on_device();
 

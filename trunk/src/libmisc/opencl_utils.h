@@ -42,6 +42,15 @@ void list_all_opencl_devices();
 
 char * cl_ReadSrcFile(char * kernelPath);
 
+cl_program cl_CompileProgram(char * kernelPath,
+							char * compileoptions, bool verbosebuild,
+							cl_context ip_ctx, cl_device_id ip_device);
+
+cl_program cl_CompileProgram_from_array(char * source,
+							char * compileoptions, bool verbosebuild,
+							cl_context ip_ctx,
+							cl_device_id ip_device);
+
 unsigned int idivup(unsigned int , unsigned int);
 
 
