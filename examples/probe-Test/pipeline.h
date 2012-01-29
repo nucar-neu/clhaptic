@@ -49,6 +49,10 @@ public:
 		position = i;
 		device_name = 0;
 	}
+	void random_device_0_crap()
+	{
+	    printf("Doing something specific for device 0\n");
+	}
 };
 
 class test_device_1: public base_device

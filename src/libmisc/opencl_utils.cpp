@@ -347,3 +347,139 @@ void ad_setKernelArg(cl_kernel kernel, unsigned int index, size_t size,
 
 
 
+//! A general compiler driver that returns a program
+cl_program cl_CompileProgram_from_array(char * source,
+							char * compileoptions, bool verbosebuild,
+							cl_context ip_ctx,
+							cl_device_id ip_device)
+{
+	cl_program op_prog;
+
+    printf("\nOpencl compiler driver - General\n");
+
+    cl_int status = CL_SUCCESS;
+    //char *source = cl_ReadSrcFile(kernelPath);
+
+    //printf("source:%s",source);
+    //printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+
+    //op_prog = (cl_program * )malloc(sizeof(cl_program)*1);
+
+    op_prog = clCreateProgramWithSource(ip_ctx, 1,
+            (const char **)&source, NULL, &status);
+
+	status = clBuildProgram(op_prog, 0, NULL,NULL, NULL, NULL);
+	if(ad_errChk(status, "creating program")) {
+            printf("status of build %d\n",status);
+
+	}
+
+    free(source);
+    if(ad_errChk(status, "building program") )
+    {
+
+        cl_build_status build_status;
+
+        clGetProgramBuildInfo( op_prog, ip_device, CL_PROGRAM_BUILD_STATUS,
+            sizeof(cl_build_status), &build_status, NULL);
+
+        if(build_status == CL_SUCCESS )
+        {
+            printf("Built program properly");
+            return op_prog;
+        }
+
+        //char *build_log;
+        size_t ret_val_size;
+        //printf("Device: %p",topo->devices[0]);
+        clGetProgramBuildInfo(op_prog, ip_device, CL_PROGRAM_BUILD_LOG, 0,
+            NULL, &ret_val_size);
+        printf("Build log size %d\n",ret_val_size);
+        char *build_log = (char *) malloc(ret_val_size+1);
+        if(build_log == NULL){ printf("Couldnt Allocate Build Log of Size %d \n",ret_val_size); exit(1);}
+
+        clGetProgramBuildInfo(op_prog, ip_device, CL_PROGRAM_BUILD_LOG,
+            ret_val_size+1, build_log, NULL);
+
+        //printf("After build log call\n");
+        // to be careful, terminate with \0
+        // there's no information in the reference whether the string is 0
+        // terminated or not
+        build_log[ret_val_size] = '\0';
+
+        printf("Build log:\n %s...\n", build_log);
+        if(build_status != CL_SUCCESS)
+        	exit(1);
+
+    }
+    return op_prog;
+}
+
+
+//! A general compiler driver that returns a program
+cl_program cl_CompileProgram(char * kernelPath,
+							char * compileoptions, bool verbosebuild,
+							cl_context ip_ctx,
+							cl_device_id ip_device)
+{
+	cl_program op_prog;
+
+    printf("\nOpencl compiler driver - General\n");
+
+    cl_int status = CL_SUCCESS;
+    char *source = cl_ReadSrcFile(kernelPath);
+
+    //printf("source:%s",source);
+    //printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+
+    //op_prog = (cl_program * )malloc(sizeof(cl_program)*1);
+
+    op_prog = clCreateProgramWithSource(ip_ctx, 1,
+            (const char **)&source, NULL, &status);
+
+	status = clBuildProgram(op_prog, 0, NULL,NULL, NULL, NULL);
+	if(ad_errChk(status, "creating program")) {
+            printf("status of build %d\n",status);
+
+	}
+
+    free(source);
+    if(ad_errChk(status, "building program") )
+    {
+
+        cl_build_status build_status;
+
+        clGetProgramBuildInfo( op_prog, ip_device, CL_PROGRAM_BUILD_STATUS,
+            sizeof(cl_build_status), &build_status, NULL);
+
+        if(build_status == CL_SUCCESS )
+        {
+            printf("Built program properly");
+            return op_prog;
+        }
+
+        //char *build_log;
+        size_t ret_val_size;
+        //printf("Device: %p",topo->devices[0]);
+        clGetProgramBuildInfo(op_prog, ip_device, CL_PROGRAM_BUILD_LOG, 0,
+            NULL, &ret_val_size);
+        printf("Build log size %d\n",ret_val_size);
+        char *build_log = (char *) malloc(ret_val_size+1);
+        if(build_log == NULL){ printf("Couldnt Allocate Build Log of Size %d \n",ret_val_size); exit(1);}
+
+        clGetProgramBuildInfo(op_prog, ip_device, CL_PROGRAM_BUILD_LOG,
+            ret_val_size+1, build_log, NULL);
+
+        //printf("After build log call\n");
+        // to be careful, terminate with \0
+        // there's no information in the reference whether the string is 0
+        // terminated or not
+        build_log[ret_val_size] = '\0';
+
+        printf("Build log:\n %s...\n", build_log);
+        if(build_status != CL_SUCCESS)
+        	exit(1);
+
+    }
+    return op_prog;
+}
