@@ -75,7 +75,7 @@ PhaseTags PhaseControl::get_latest_phase_tag(int ip)
 //! The value returned is phase_count - 1 because the after the phase is added
 //! in PhaseControl::mark_phase(), the counter is incremented. So phase_count
 //! will always be ahead by one wrt to the location in the tags vector
-int PhaseControl::get_latest_phase_no(int ip )
+int PhaseControl::get_latest_phase_no()
 {
 	//printf("Return the phase count %d  \n",phase_count-1);
 	return (phase_count -1 );

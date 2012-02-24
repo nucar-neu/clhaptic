@@ -296,39 +296,46 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 	//printf("Number of kernels %ld\n", kernel_vec.size());
 	//!TODO Multiple kernels could be enqueued
 
-	if(kernel_to_inject == UNKNOWN)
+	if( device_state == DISABLED)
 	{
-		for(int i = 0; i< kernel_vec.size() ; i++)
-		{
+		return;
+	}
+	if(kernel_to_inject == UNKNOWN )
+	{
 
+			for(int i = 0; i< kernel_vec.size() ; i++)
+			{
+
+				cl_event analysis_event;
+				status = clEnqueueNDRangeKernel(queue,
+							kernel_vec[i]->kernel,
+							kernel_vec[i]->dim_globalws,
+							0,kernel_vec[i]->globalws,kernel_vec[i]->localws,
+							len_analysis_waitlist,analysis_waitlist,
+							&analysis_event);
+				ad_errChk(status,"Enq inj analysis", EXITERROR);
+				profiler->add(analysis_event);
+
+			}
+
+	}
+	else
+	{
 			cl_event analysis_event;
+			// Run kernel from vector with bound checking
 			status = clEnqueueNDRangeKernel(queue,
-						kernel_vec[i]->kernel,
-						kernel_vec[i]->dim_globalws,
-						0,kernel_vec[i]->globalws,kernel_vec[i]->localws,
+						kernel_vec.at(kernel_to_inject)->kernel,
+						kernel_vec.at(kernel_to_inject)->dim_globalws,
+						0,
+						kernel_vec.at(kernel_to_inject)->globalws,
+						kernel_vec.at(kernel_to_inject)->localws,
 						len_analysis_waitlist,analysis_waitlist,
 						&analysis_event);
 			ad_errChk(status,"Enq inj analysis", EXITERROR);
 			profiler->add(analysis_event);
 
-		}
 	}
-	else
-	{
-		cl_event analysis_event;
-		// Run kernel from vector with bound checking
-		status = clEnqueueNDRangeKernel(queue,
-					kernel_vec.at(kernel_to_inject)->kernel,
-					kernel_vec.at(kernel_to_inject)->dim_globalws,
-					0,
-					kernel_vec.at(kernel_to_inject)->globalws,
-					kernel_vec.at(kernel_to_inject)->localws,
-					len_analysis_waitlist,analysis_waitlist,
-					&analysis_event);
-		ad_errChk(status,"Enq inj analysis", EXITERROR);
-		profiler->add(analysis_event);
-
-	}
+	clFlush(queue);
 
 }
 

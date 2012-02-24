@@ -340,7 +340,7 @@ void ad_setKernelArg(cl_kernel kernel, unsigned int index, size_t size,
     cl_int status;
     status = clSetKernelArg(kernel, index, size, data);
     if(status != CL_SUCCESS)
-    	printf("Error in Arg No %d\n",index);
+    	printf("Error in Arg No %d\t",index);
     ad_errChk(status, "Setting kernel arg", true);
 }
 

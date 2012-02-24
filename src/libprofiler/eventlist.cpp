@@ -298,6 +298,12 @@ cl_int EventList::clSetUserEventStatus(cl_user_event event,
     return 0;
 }
 
+int EventList::get_latest_phase_id()
+{
+	return control.get_latest_phase_no();
+
+}
+
 // Generate a filename based on the current time
 char* EventList::createFilenameWithTimestamp() 
 {

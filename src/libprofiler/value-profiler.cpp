@@ -27,10 +27,11 @@ void value_profiler::check_value_on_device(ad_rule rule)
 {
 	cl_mem dest;
 	cl_int status;
-
-	ad_setKernelArg(test_kernel,0,sizeof(cl_mem),(void *)&(rule.get_target_buff()));
+	printf("Not Implemented ");
+	exit(-1);
+	//ad_setKernelArg(test_kernel,0,sizeof(cl_mem),(void *)&(rule.get_target_buff()));
 	//! Action to be done
-	ad_setKernelArg(test_kernel,1,sizeof(cl_int),(void *)&(rule.get_target_buff()));
+	//ad_setKernelArg(test_kernel,1,sizeof(cl_int),(void *)&(rule.get_target_buff()));
 	clEnqueueTask(access_queue,test_kernel,0,NULL,NULL);
 
 }

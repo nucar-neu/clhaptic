@@ -136,7 +136,9 @@ public:
 
 	//! Return the tag
 	PhaseTags get_latest_phase_tag(int ip = 0);
-	int get_latest_phase_no(int ip = 0);
+	//int get_latest_phase_no(int ip = 0);
+
+	int get_latest_phase_no();
 };
 
 #endif /* PHASECONTROL_H_ */
