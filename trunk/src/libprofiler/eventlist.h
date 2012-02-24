@@ -66,8 +66,12 @@ public:
     //! Return Profiling Status
     bool getProfilingStatus();
 
-    //! Adds a marker in PhaseControl tags vector
+    //! Adds a marker in PhaseControl tags vector.
+    //! This function is only useful for the case of recording timer stamps
     void markPhase(int u);
+    void simple_enqueue_phase(int u);
+
+    int get_latest_phase_id();
 
 private:
 

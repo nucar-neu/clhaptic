@@ -19,6 +19,11 @@ void EventList::markPhase(int u)
 	}
 }
 
+void EventList::simple_enqueue_phase(int u)
+{
+	control.mark_phase(u);
+}
+
 //! User API to compare phase changes.
 //! This is done instead of just showing EventList::analysePhaseChange
 //! so that we dont have to expose the profiling checking code to the user
