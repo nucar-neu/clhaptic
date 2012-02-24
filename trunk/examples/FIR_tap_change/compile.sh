@@ -1,0 +1,1 @@
+g++ FIR_tapchange.cpp -I /opt/AMDAPP/include/ -I /home/pmistry/clhaptic/src/libprofiler -I /home/pmistry/clhaptic/src/libanalysis-devices -L/opt/AMDAPP/lib/x86_64/ -lOpenCL -L/home/pmistry/clhaptic/src -lhaptic

@@ -1,0 +1,13 @@
+package fir;
+
+message stage {
+  required string name = 1;
+  required int32 id = 2;
+
+}
+
+message pipeline {
+ optional stage fir_stg_1 = 1;
+ optional stage fir_stg_2 = 2;
+}
+
