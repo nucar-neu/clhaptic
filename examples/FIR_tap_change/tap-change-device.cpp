@@ -5,9 +5,33 @@
 tap_change_device::tap_change_device()
 {
 	change_interval = UNKNOWN;
+	v_profiler = new value_profiler[1];
+	ruledb = new ad_rule_vec[1];
 
 }
 
+void tap_change_device::set_threshold(float value , cl_mem tracked_buffer, int offset)
+{
+	threshold_value = value;
+	input_buffer = tracked_buffer;
+}
+
+void tap_change_device::init_value_checker(cl_command_queue ip_queue, cl_context ip_ctx, cl_device_id ip_device)
+{
+	v_profiler->init(ip_queue,ip_ctx,ip_device);
+	v_profiler->set_kernel("sum-op-kernel.cl","sum_op_kernel");
+	ad_rule value_monitor_rule;
+	value_monitor_rule.add(VALUE_MORE_THAN,input_buffer,float(threshold_value));
+	ruledb->add_rule(value_monitor_rule);
+
+
+}
+void tap_change_device::check_value()
+{
+
+	v_profiler->test_rule(ruledb->get_rule(0));
+
+}
 
 void tap_change_device::add_phase(int ip_phase_id)
 {
