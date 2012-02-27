@@ -172,6 +172,7 @@ int main(int argc , char** argv) {
 	tcontrol->init_app_profiler(eventList);
 	tcontrol->build_analysis_kernel("tap-change-kernel.cl","tap_change_kernel",0);
 	tcontrol->init_tap_change_device(1024, numBlocks);
+	tcontrol->init_value_checker(command_queue,context,device_id);
 	tcontrol->configure_analysis_kernel();
 
 #ifdef GPUPROF
@@ -296,6 +297,7 @@ int main(int argc , char** argv) {
 					&event);
 
 			tcontrol->add_phase(count);
+			tcontrol->check_value();
 			tcontrol->inject_analysis(0);
 			clFlush(command_queue);
 			CHECK_STATUS( ret,"Error: Range kernel. (clCreateKernel)\n");
