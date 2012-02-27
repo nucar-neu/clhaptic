@@ -297,7 +297,7 @@ int main(int argc , char** argv) {
 					&event);
 
 			tcontrol->add_phase(count);
-			tcontrol->check_value();
+			//tcontrol->check_value();
 			tcontrol->inject_analysis(0);
 			clFlush(command_queue);
 			CHECK_STATUS( ret,"Error: Range kernel. (clCreateKernel)\n");
