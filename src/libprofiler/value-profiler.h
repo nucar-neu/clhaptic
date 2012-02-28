@@ -50,7 +50,7 @@ private:
 	std::vector<result_buffer> locn;
 	std::vector<value_profiler_config> config_locn;
 	//! Wrapped state for all value checking OpenCL kernels
-	std::vector<kernel_object> kernel_vec;
+	std::vector<kernel_object> test_kernel_vec;
 
 	//! Location of memory. This has been removed because all buffers should be checked via their respective rule
 	inline bool apply_rule_exact(ad_rule ip_rule);

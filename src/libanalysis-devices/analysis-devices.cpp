@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "analysis-devices-utils.h"
+#include "kernel-object.h"
 #include "fission_topology.h"
 #include "fissionutils.h"
 #include "analysis-devices.h"
@@ -194,10 +195,6 @@ char * analysis_device::generate_kernel_path(char * filename)
 
 }
 
-kernel_object analysis_device::alloc_kernel_object()
-{
-	return new _kernel_object;
-}
 
 void analysis_device::build_analysis_kernel(char * filename, char * kernel_name,int pos)
 {
