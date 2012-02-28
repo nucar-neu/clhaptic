@@ -25,7 +25,7 @@ public:
 	void init_value_checker(cl_command_queue ip_queue, cl_context ip_ctx, cl_device_id ip_device);
 	//! Function to set the value.
 	void set_threshold(float value , cl_mem input_buffer, int offset );
-	void init_tap_change_device(int , int);
+	void init_tap_change_device(cl_context ip_ctx, int , int);
 	tap_change_device();
 	void configure_analysis_kernel();
 
