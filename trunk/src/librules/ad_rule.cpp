@@ -5,10 +5,22 @@
 
 //! See documentation on why, inline has been removed
 
+void ad_rule::test_rule_kernel(cl_context ip_ctx, cl_command_queue ip_queue, cl_kernel ip_kernel,
+				size_t * localws, size_t * globalws, int n_dims)
+{
+
+	cl_int status  = CL_SUCCESS;
+	status =  clEnqueueNDRangeKernel(ip_queue,ip_kernel,n_dims,localws,globalws,NULL,0,NULL,NULL);
+	ad_errChk(status,"Error in monitoring kernel");
+
+}
+
+
 bool ad_rule::test_rule(cl_context ctx, cl_command_queue queue)
 {
 	printf("WARNING\nThis shouldnt be used  with the profilers\n");
-
+	printf("Killing Program Here");
+	exit(-1);
 	if(type == VALUE_EXACT)
 	{
 		if(apply_rule_exact(ctx,queue) )
@@ -31,19 +43,16 @@ bool ad_rule::test_rule(cl_context ctx, cl_command_queue queue)
 		else
 			return RULE_FAILURE;
 	}
-	if(type == UNDEFINED_RULE)
+	if(type == UNDEFINED_RULE_TYPE)
 	{
 		printf("rule not defined yet");
 		exit(-1);
 	}
+	printf("SHOUldnt reach here\n");
+	exit(-1);
+	return RULE_FAILURE;
 }
 
-void print_rule_details()
-{
-	//TODO
-	printf("Pretty printing TODO");
-
-}
 
 bool ad_rule::apply_rule_less_than(cl_context ctx, cl_command_queue queue)
 {
@@ -84,14 +93,10 @@ bool ad_rule::apply_rule_exact(cl_context ctx, cl_command_queue queue)
 
 ad_rule::ad_rule()
 {
-	type = UNDEFINED_RULE;
+	type = UNDEFINED_RULE_TYPE;
 }
 
 
-cl_int ad_rule::add()
-{
-
-}
 
 //inline
 rule_type ad_rule::get_type()
@@ -121,17 +126,38 @@ size_t ad_rule::get_target_mem_size()
 	return mem_size;
 }
 
-cl_int ad_rule::add(rule_type t, cl_mem ip_buff, float ip_value)
+void ad_rule::add(rule_type t, cl_mem ip_buff, float ip_value)
 {
 	target_buffer= ip_buff ;
 	type = t;
 	target_value = ip_value;
 	mem_size = sizeof(float);
+
+}
+
+void ad_rule::add(rule_type t)
+{
+	type = RULE_TYPE_KERNEL;
 }
 
 
+char * rule_type_msg[MAX_NUM_RULES] = {
+	"VALUE_MORE_THAN",  	// 0
+    "VALUE_LESS_THAN",		//-1
+    "VALUE_EXACT",          //-2
+    "RULE_TYPE_KERNEL"		//-3
+};
+
+char * ad_rule::stringify_rule_type(rule_type t)
+{
+	return rule_type_msg[t - RULE_TYPE_BASE_NO];
+}
+
 void ad_rule::print_rule_details()
 {
-
+	if(type == RULE_TYPE_KERNEL)
+		printf("Added a RULE \t Type %s - No other details in RuleDB \n",stringify_rule_type(type));
+	else
+		printf("Added a RULE \t Type %s \t Target Value \t %f \n",stringify_rule_type(type),target_value);
 
 }

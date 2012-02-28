@@ -11,9 +11,9 @@
 #include "opencl_utils.h"
 
 
-void ad_sync(cl_command_queue queue);
 
-//unsigned int idivup(unsigned int , unsigned int);
+//!This file exists only in case of something specific needs to be added for analysis-devices.
+//!All utilities same as opencl_utils.h
 
 #endif //ANALYSIS_DEVICES_UTILS_H
 

@@ -35,8 +35,10 @@ private:
 	bool inline apply_rule_less_than(cl_context , cl_command_queue );
 	bool inline apply_rule_more_than(cl_context , cl_command_queue );
 
+
 public:
 
+	char * stringify_rule_type(rule_type t);
 	ad_rule();
 	// Note that the inlining in this case wont work unless you
 	// move the implementation of the function to the header because, gcc cannot see the code to inline it here.
@@ -46,12 +48,15 @@ public:
 	int get_target_offset();
 	cl_mem get_target_buff();
 	size_t get_target_mem_size();
-	cl_int add();
-	cl_int add(rule_type, cl_mem, float val);
+
+	//! Stub for adding the "kernel" type rules
+	void add(rule_type t);
+	void add(rule_type, cl_mem, float val);
 	//! Interface to call all the apply_ functions
 	void print_rule_details();
 	bool test_rule(cl_context ctx, cl_command_queue queue);
-
+	void test_rule_kernel(cl_context ip_ctx, cl_command_queue ip_queue, cl_kernel ip_kernel,
+			size_t * localws, size_t * globalws, int n_dims);
 };
 
 

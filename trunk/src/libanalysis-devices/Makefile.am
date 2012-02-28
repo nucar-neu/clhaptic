@@ -3,7 +3,6 @@ lib_LIBRARIES = libanalysis-devices.a
 libanalysis_devices_a_SOURCES = \
     analysis-devices.cpp \
     device-compare-images.cpp \
-    analysis-devices-utils.cpp \
     monitored-queue.cpp
 
 
