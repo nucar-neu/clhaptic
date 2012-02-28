@@ -32,4 +32,6 @@ struct _kernel_object
 //! Typedef in a similar manner as things like cl_mem
 typedef _kernel_object * kernel_object;
 
+kernel_object alloc_kernel_object();
+
 #endif //__KERNEL_OBJECT_

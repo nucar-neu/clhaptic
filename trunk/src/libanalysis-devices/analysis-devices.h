@@ -112,7 +112,7 @@ public:
 	//result_buffer result;
 
 	void alloc_kernel_mem(int k);
-	kernel_object alloc_kernel_object();
+
 	//! Compile kernels for device
 	void build_analysis_kernel(char * filename, char * kernel_name, int pos);
 	//! Will be called by function defined in the derived class

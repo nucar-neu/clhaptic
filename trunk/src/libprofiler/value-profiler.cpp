@@ -167,11 +167,20 @@ void value_profiler::add_to_wait_list(int k, cl_event * ip_event)
 
 void value_profiler::set_kernel(char * filename, char * kernelname)
 {
+	cl_int status = CL_SUCCESS;
 	cl_program test_program ;
 	test_program = cl_CompileProgram(filename,NULL,TRUE,ctx,access_device);
-	cl_int status = CL_SUCCESS;
-	test_kernel = clCreateKernel(test_program,kernelname,&status);
+
+ 	kernel_object k = alloc_kernel_object();
+ 	k->dim_globalws = 2;
+ 	k->dim_localws = 2;
+ 	k->name = kernelname;
+ 	k->kernel = clCreateKernel(test_program,kernelname,&status);
 	ad_errChk(status,"Creating Checking task",EXITERROR);
+
+ 	test_kernel_vec.push_back(k);
+
+
 
 }
 
