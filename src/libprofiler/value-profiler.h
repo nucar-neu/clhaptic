@@ -5,7 +5,10 @@
 #include <vector>
 
 #include "opencl_utils.h"
+#include "kernel-object.h"
 #include "ad_rule_vec.h"
+
+#define MAX_LEN_WAITLIST 64
 
 #define RESULT_ON_DEVICE	9001
 #define RESULT_ON_HOST 		9002
@@ -46,16 +49,18 @@ private:
 	bool profiler_state;
 	std::vector<result_buffer> locn;
 	std::vector<value_profiler_config> config_locn;
+	//! Wrapped state for all value checking OpenCL kernels
+	std::vector<kernel_object> kernel_vec;
 
 	//! Location of memory. This has been removed because all buffers should be checked via their respective rule
-	//cl_mem buff;
-	//int offset;
-
 	inline bool apply_rule_exact(ad_rule ip_rule);
 	inline bool apply_rule_less_than(ad_rule ip_rule);
 	inline bool apply_rule_more_than(ad_rule ip_rule);
 
 public:
+	~value_profiler();
+	int len_wait_list;
+	cl_event * wait_list;
 
 	cl_context ctx;
 	cl_device_id access_device;
@@ -71,7 +76,10 @@ public:
 	void record_result_on_host();
 	void record_result_on_device();
 
+	void set_kernel(char * filename, char * kernelname);
 	bool test_rule(ad_rule ip_rule);
+
+	void add_to_wait_list(int k, cl_event * ip_event);
 };
 
 #endif //  __VALUE_PROFILER_

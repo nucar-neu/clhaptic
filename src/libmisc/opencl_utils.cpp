@@ -310,6 +310,20 @@ void list_all_opencl_devices()
 
 
 
+//-------------------------------------------------------
+//          Synchronization functions
+//-------------------------------------------------------
+
+/*!
+    Wait till all pending commands in queue are finished
+*/
+void ad_sync(cl_command_queue commandQueue)
+{
+    clFinish(commandQueue);
+}
+
+
+
 //! \return the next highest value such that x/y = 0
 // This function that takes a positive integer 'value' and returns
 // the nearest multiple of 'multiple' (used for padding columns)

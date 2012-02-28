@@ -55,33 +55,56 @@ void value_profiler::set_buffer(cl_mem ip_buff, int ip_offset)
 
 inline bool value_profiler::apply_rule_exact(ad_rule ip)
 {
-	float * target_ptr;
-	cl_int status;
-	target_ptr = (float *)clEnqueueMapBuffer(access_queue ,ip.get_target_buff(),
-							CL_TRUE, CL_MEM_READ_ONLY,
-							0,ip.get_target_mem_size(),0,
-							NULL,NULL,&status);
-	ad_errChk(status,"error mapping buffer");
-	if(float(target_ptr[0]) == ip.get_target_value())
-		return RULE_SUCCESS;
-	else
+
+	if(profiler_state == DISABLED)
+	{
+		printf("WARNING: Profiler Disabled");
 		return RULE_FAILURE;
+	}
+	else
+	{
+		float * target_ptr;
+		cl_int status;
+		target_ptr = (float *)clEnqueueMapBuffer(access_queue ,ip.get_target_buff(),
+								CL_TRUE, CL_MEM_READ_ONLY,
+								0,ip.get_target_mem_size(),0,
+								NULL,NULL,&status);
+		//! Verify if this is needd
+		clFinish(access_queue);
+		ad_errChk(status,"error mapping buffer in value profiler");
+		if(float(target_ptr[0]) == ip.get_target_value())
+			return RULE_SUCCESS;
+		else
+			return RULE_FAILURE;
+	}
 }
 
 inline bool value_profiler::apply_rule_less_than(ad_rule ip)
 {
 
-	float * target_ptr;
-	cl_int status;
-	target_ptr = (float *)clEnqueueMapBuffer(access_queue,ip.get_target_buff(),
-							CL_TRUE, CL_MEM_READ_ONLY,
-							0,ip.get_target_mem_size(),0,
-							NULL,NULL,&status);
-	ad_errChk(status,"error mapping buffer");
-	if(float(target_ptr[0]) == ip.get_target_value())
-		return RULE_SUCCESS;
-	else
+	if(profiler_state == DISABLED)
+	{
+		printf("WARNING: Profiler Disabled");
 		return RULE_FAILURE;
+	}
+	else
+	{
+		float * target_ptr;
+		cl_int status;
+		target_ptr = (float *)clEnqueueMapBuffer(access_queue,ip.get_target_buff(),
+								CL_TRUE, CL_MEM_READ_ONLY,
+								0,ip.get_target_mem_size(),0,
+								NULL,NULL,&status);
+		ad_errChk(status,"error mapping buffer in value profiler");
+		//! Verify if this is needd
+		clFinish(access_queue);
+
+		if(float(target_ptr[0]) == ip.get_target_value())
+			return RULE_SUCCESS;
+		else
+			return RULE_FAILURE;
+
+	}
 }
 
 inline bool value_profiler::apply_rule_more_than(ad_rule ip)
@@ -99,15 +122,25 @@ inline bool value_profiler::apply_rule_more_than(ad_rule ip)
 								CL_TRUE, CL_MEM_READ_ONLY,
 								0,ip.get_target_mem_size(),0,
 								NULL,NULL,&status);
-		ad_errChk(status,"error mapping buffer");
+		ad_errChk(status,"error mapping buffer in value profiler");
 		clFinish(access_queue);
-		printf("Value seen from memory %f \n", target_ptr[0]);
+		//printf("Value seen from memory %f and Target is %f \n", target_ptr[0],ip.get_target_value());
+		printf("Value seen from memory Target is %f \n",ip.get_target_value());
 		//getchar();
+
 		if(float(target_ptr[0]) > ip.get_target_value())
 			return RULE_SUCCESS;
 		else
 			return RULE_FAILURE;
 	}
+}
+
+
+value_profiler::~value_profiler()
+{
+
+	free(wait_list);
+
 }
 
 value_profiler::value_profiler()
@@ -116,23 +149,40 @@ value_profiler::value_profiler()
 	//! Disable value_profiler by default since it is a high overhead operation
 	//profiler_state = DISABLED;
 	profiler_state = ENABLED;
+	len_wait_list = 0;
+	wait_list = (cl_event * )malloc(sizeof(cl_event)*MAX_LEN_WAITLIST);
 
 
 }
 
+void value_profiler::add_to_wait_list(int k, cl_event * ip_event)
+{
+	for(int i = 0; i<k; i++)
+	{
+
+
+	}
+
+}
+
+void value_profiler::set_kernel(char * filename, char * kernelname)
+{
+	cl_program test_program ;
+	test_program = cl_CompileProgram(filename,NULL,TRUE,ctx,access_device);
+	cl_int status = CL_SUCCESS;
+	test_kernel = clCreateKernel(test_program,kernelname,&status);
+	ad_errChk(status,"Creating Checking task",EXITERROR);
+
+}
 
 void value_profiler::init(cl_command_queue ip_queue, cl_context ip_ctx, cl_device_id ip_device )
 {
 	access_queue = ip_queue;
 	ctx = ip_ctx;
+
 	if(ip_device != NULL)
 	{
 		access_device = ip_device;
-		cl_program test_program ;
-		test_program = cl_CompileProgram("test_kernel.cl",NULL,TRUE,ctx,access_device);
-		cl_int status = CL_SUCCESS;
-		test_kernel = clCreateKernel(test_program,"test_function",&status);
-		ad_errChk(status,"Creating Checking task",EXITERROR);
 	}
 	else
 	{
@@ -167,7 +217,7 @@ bool value_profiler::test_rule(ad_rule ip_rule)
 			else
 				return RULE_FAILURE;
 		}
-		if(ip_rule.get_type()  == UNDEFINED_RULE)
+		if(ip_rule.get_type() == UNDEFINED_RULE_TYPE)
 		{
 			printf("rule not defined yet");
 			exit(-1);
@@ -177,4 +227,7 @@ bool value_profiler::test_rule(ad_rule ip_rule)
 	{
 		printf("Warning - Value profiler not enabled");
 	}
+	printf("Shouldnt get here");
+	exit(-1);
+	return RULE_FAILURE;
 }

@@ -27,6 +27,8 @@
 #define UNKNOWN -999
 
 
+void ad_sync(cl_command_queue commandQueue);
+
 bool rand_zero_or_one();
 
 cl_mem ad_allocBufferPinned(size_t mem_size,cl_context ctx );
