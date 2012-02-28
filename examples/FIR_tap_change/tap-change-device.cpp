@@ -10,10 +10,11 @@ tap_change_device::tap_change_device()
 
 }
 
-void tap_change_device::set_threshold(float value , cl_mem tracked_buffer, int offset)
+void tap_change_device::set_threshold(float value , cl_mem ip_buffer, int offset)
 {
 	threshold_value = value;
-	input_buffer = tracked_buffer;
+	input_buffer = ip_buffer;
+
 }
 
 void tap_change_device::init_value_checker(cl_command_queue ip_queue, cl_context ip_ctx, cl_device_id ip_device)
@@ -22,6 +23,7 @@ void tap_change_device::init_value_checker(cl_command_queue ip_queue, cl_context
 	v_profiler->set_kernel("sum-op-kernel.cl","sum_op_kernel");
 	ad_rule value_monitor_rule;
 	value_monitor_rule.add(VALUE_MORE_THAN,input_buffer,float(threshold_value));
+	value_monitor_rule.print_rule_details();
 	ruledb->add_rule(value_monitor_rule);
 
 
@@ -29,7 +31,8 @@ void tap_change_device::init_value_checker(cl_command_queue ip_queue, cl_context
 void tap_change_device::check_value()
 {
 
-	v_profiler->test_rule(ruledb->get_rule(0));
+	bool result = v_profiler->test_rule(ruledb->get_rule(0));
+	printf("Value of Rule %d \n", int (result));
 
 }
 
@@ -49,24 +52,23 @@ void tap_change_device::add_phase(int ip_phase_id)
 }
 
 //! Setup device
-void tap_change_device::init_tap_change_device(int ip_n_taps, int ip_n_iterations)
+void tap_change_device::init_tap_change_device(cl_context ip_ctx, int ip_n_taps, int ip_n_iterations)
 {
 	num_taps = ip_n_taps;
 	num_iterations = ip_n_iterations;
 	change_interval = 10;
-	configure_analysis_device_gpu(getContext());
+	//! Need to pass on the OpenCL Context from the application
+	configure_analysis_device_gpu(ip_ctx);
 
 	cl_int status;
 
-	coeff_buff = clCreateBuffer(getContext(),CL_MEM_READ_WRITE,num_taps*sizeof(float),NULL,&status);
+	coeff_buff = clCreateBuffer(ip_ctx,CL_MEM_READ_WRITE,num_taps*sizeof(float),NULL,&status);
 	ad_errChk(status,"error declaring buffers");
 
 }
 
 //! Configure the analysis kernel.
 //! At this stage the kernel should be allocated and compiled
-//! \param p_img Present Image
-//! \param p_img Next Image
 void tap_change_device::configure_analysis_kernel()
 {
 	//	printf("Setting Arguments and Config Analysis Kernel\n");

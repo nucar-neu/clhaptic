@@ -165,16 +165,6 @@ int main(int argc , char** argv) {
 	cl_command_queue command_queue = clCreateCommandQueue(context, device_id, CL_QUEUE_PROFILING_ENABLE, &ret);
 
 
-	// Create Eventlist for Timestamps
-	eventList = new EventList(context, command_queue, device_id,true);
-
-	tcontrol->configure_analysis_device_gpu(context);
-	tcontrol->init_app_profiler(eventList);
-	tcontrol->build_analysis_kernel("tap-change-kernel.cl","tap_change_kernel",0);
-	tcontrol->init_tap_change_device(1024, numBlocks);
-	tcontrol->init_value_checker(command_queue,context,device_id);
-	tcontrol->configure_analysis_kernel();
-
 #ifdef GPUPROF
 	// Create performance counter Init
 	GPA_Initialize();
@@ -191,6 +181,18 @@ int main(int argc , char** argv) {
 			sizeof(cl_float) * numTap, NULL, &ret);
 	cl_mem temp_outputBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE,
 			sizeof(cl_float) * (numData+numTap-1), NULL, &ret);
+
+	// Create Eventlist for Timestamps
+	eventList = new EventList(context, command_queue, device_id,true);
+
+	tcontrol->init_tap_change_device(context,1024, numBlocks);
+	tcontrol->init_app_profiler(eventList);
+	tcontrol->set_threshold(1024.0f, outputBuffer, 0);
+	tcontrol->build_analysis_kernel("tap-change-kernel.cl","tap_change_kernel",0);
+	tcontrol->init_value_checker(command_queue,context,device_id);
+
+	tcontrol->configure_analysis_kernel();
+
 
 	// Create a program from the kernel source
 	cl_program program = clCreateProgramWithSource(context, 1,
@@ -297,7 +299,7 @@ int main(int argc , char** argv) {
 					&event);
 
 			tcontrol->add_phase(count);
-			//tcontrol->check_value();
+			tcontrol->check_value();
 			tcontrol->inject_analysis(0);
 			clFlush(command_queue);
 			CHECK_STATUS( ret,"Error: Range kernel. (clCreateKernel)\n");
