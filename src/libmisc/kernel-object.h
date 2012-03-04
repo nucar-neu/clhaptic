@@ -34,4 +34,6 @@ typedef _kernel_object * kernel_object;
 
 kernel_object alloc_kernel_object();
 
+void set_kernel_name(_kernel_object * k, char * name);
+
 #endif //__KERNEL_OBJECT_

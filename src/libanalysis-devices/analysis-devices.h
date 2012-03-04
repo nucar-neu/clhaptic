@@ -73,6 +73,9 @@ protected:
 	int frequency;
 
 public:
+	//!Adding the resolve waiting
+	virtual void resolve_waiting();
+
 	//! A rule database
 	ad_rule_vec * ruledb;
 
@@ -98,7 +101,7 @@ public:
 	//! Return the kernel object
 	cl_kernel getKernel(int k);
 
-	~analysis_device();
+	virtual ~analysis_device();
 
 	//! Profiler for analysis device.
 	//! Handles timing and the insertion of kernels

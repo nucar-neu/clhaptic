@@ -7,7 +7,7 @@
 #include "fission_topology.h"
 #include "fissionutils.h"
 #include "analysis-devices.h"
-
+#include "logger.h"
 
 
 void * analysis_device::mapBuffer(cl_mem mem, size_t mem_size, cl_mem_flags flags)
@@ -299,7 +299,7 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 	}
 	if(kernel_to_inject == UNKNOWN )
 	{
-
+			resolve_waiting();
 			for(int i = 0; i< kernel_vec.size() ; i++)
 			{
 
@@ -318,6 +318,7 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 	}
 	else
 	{
+			resolve_waiting();
 			cl_event analysis_event;
 			// Run kernel from vector with bound checking
 			status = clEnqueueNDRangeKernel(queue,
@@ -333,6 +334,11 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 
 	}
 	clFlush(queue);
+
+}
+void analysis_device::resolve_waiting()
+{
+	print_warning("Warning - No synchronization function provided\n");
 
 }
 
