@@ -1,6 +1,6 @@
 #include "stdio.h"
 #include <CL/cl.h>
-
+#include "logger.h"
 #include "opencl_utils.h"
 #include "value-profiler.h"
 
@@ -58,7 +58,7 @@ inline bool value_profiler::apply_rule_exact(ad_rule ip)
 
 	if(profiler_state == DISABLED)
 	{
-		printf("WARNING: Profiler Disabled");
+		print_warning("Profiler Disabled");
 		return RULE_FAILURE;
 	}
 	else
@@ -84,7 +84,7 @@ inline bool value_profiler::apply_rule_less_than(ad_rule ip)
 
 	if(profiler_state == DISABLED)
 	{
-		printf("WARNING: Profiler Disabled");
+		printf("Profiler Disabled");
 		return RULE_FAILURE;
 	}
 	else
@@ -111,7 +111,7 @@ inline bool value_profiler::apply_rule_more_than(ad_rule ip)
 {
 	if(profiler_state == DISABLED)
 	{
-		printf("WARNING: Profiler Disabled");
+		print_warning("Profiler Disabled");
 		return RULE_FAILURE;
 	}
 	else
@@ -145,7 +145,7 @@ value_profiler::~value_profiler()
 
 value_profiler::value_profiler()
 {
-	printf("Default Constructor - Value profiler\n");
+	print_logging("Default Constructor - Value profiler\n");
 	//! Disable value_profiler by default since it is a high overhead operation
 	//profiler_state = DISABLED;
 	profiler_state = ENABLED;
@@ -175,6 +175,7 @@ void value_profiler::set_kernel(char * filename, char * kernelname)
  	k->dim_globalws = 2;
  	k->dim_localws = 2;
  	k->name = kernelname;
+ 	set_kernel_name(k,kernelname);
  	k->kernel = clCreateKernel(test_program,kernelname,&status);
 	ad_errChk(status,"Creating Checking task",EXITERROR);
 
@@ -195,7 +196,7 @@ void value_profiler::init(cl_command_queue ip_queue, cl_context ip_ctx, cl_devic
 	}
 	else
 	{
-		printf("Unknown Device passed to value profiler\n Cannot compile kernel\n");
+		print_logging("Unknown Device passed to value profiler\n Cannot compile kernel");
 		exit(-1);
 
 	}
@@ -203,40 +204,47 @@ void value_profiler::init(cl_command_queue ip_queue, cl_context ip_ctx, cl_devic
 
 bool value_profiler::test_rule(ad_rule ip_rule)
 {
-	if(profiler_state == ENABLED)
+	if(ip_rule.get_type() == RULE_TYPE_KERNEL)
 	{
-		if(ip_rule.get_type() == VALUE_EXACT)
-		{
-			if(apply_rule_exact(ip_rule ) )
-				return RULE_SUCCESS;
-			else
-				return RULE_FAILURE;
-		}
-		if(ip_rule.get_type()  == VALUE_LESS_THAN)
-		{
-			if(apply_rule_less_than(ip_rule ))
-				return RULE_SUCCESS;
-			else
-				return RULE_FAILURE;
-		}
-		if(ip_rule.get_type() == VALUE_MORE_THAN)
-		{
-			if(apply_rule_more_than(ip_rule ))
-				return RULE_SUCCESS;
-			else
-				return RULE_FAILURE;
-		}
-		if(ip_rule.get_type() == UNDEFINED_RULE_TYPE)
-		{
-			printf("rule not defined yet");
-			exit(-1);
-		}
+		printf("foo");
 	}
 	else
 	{
-		printf("Warning - Value profiler not enabled");
+		if(profiler_state == ENABLED)
+		{
+			if(ip_rule.get_type() == VALUE_EXACT)
+			{
+				if(apply_rule_exact(ip_rule ) )
+					return RULE_SUCCESS;
+				else
+					return RULE_FAILURE;
+			}
+			if(ip_rule.get_type()  == VALUE_LESS_THAN)
+			{
+				if(apply_rule_less_than(ip_rule ))
+					return RULE_SUCCESS;
+				else
+					return RULE_FAILURE;
+			}
+			if(ip_rule.get_type() == VALUE_MORE_THAN)
+			{
+				if(apply_rule_more_than(ip_rule ))
+					return RULE_SUCCESS;
+				else
+					return RULE_FAILURE;
+			}
+			if(ip_rule.get_type() == UNDEFINED_RULE_TYPE)
+			{
+				print_logging("rule not defined yet");
+				exit(-1);
+			}
+		}
+		else
+		{
+			print_warning("Value profiler not enabled");
+		}
 	}
-	printf("Shouldnt get here");
+	print_logging("Should not get here");
 	exit(-1);
 	return RULE_FAILURE;
 }
