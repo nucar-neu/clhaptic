@@ -39,21 +39,21 @@ CC   = gcc -O3 -pg
 LINK = g++ -O3 -pg 
 
 # Includes
-
-MISCINC	:= ~/clhaptic/src/libmisc
-TOPOINC	:= ~/clhaptic/src/libtopology
-PROFILERINC=~/clhaptic/src/libprofiler
-ANALYSISDEVICESINC=/home/pmistry/clhaptic/src/libanalysis-devices
-MISCINC=~/clhaptic/src/libmisc
-CLHAPTIC=~/clhaptic
-RULEINC=~/clhaptic/src/librules
+HOME=/home/pmistry
+MISCINC	:= $(HOME)/clhaptic/src/libmisc
+TOPOINC	:= $(HOME)/clhaptic/src/libtopology
+PROFILERINC=$(HOME)/clhaptic/src/libprofiler
+ANALYSISDEVICESINC=$(HOME)/clhaptic/src/libanalysis-devices
+MISCINC=$(HOME)/clhaptic/src/libmisc
+CLHAPTIC=$(HOME)/clhaptic
+RULEINC=$(HOME)/clhaptic/src/librules
 
 COMMON_INCLUDES += -I$(OPENCV_INC) -I$(PROFILERINC) -I$(ANALYSISDEVICESINC) -I$(MISCINC) -I$(RULEINC) -I$(TOPOINC)
 AMD_INCLUDES    += -I$(AMD_OPENCL_INSTALL_PATH)/include $(COMMON_INCLUDES)
 NVIDIA_INCLUDES += -I$(NVIDIA_OPENCL_INSTALL_PATH)/include $(COMMON_INCLUDES)
 
 # Libs
-HAPTICSRCDIR    := ~/clhaptic/src
+HAPTICSRCDIR    := $(HOME)/clhaptic/src
 HAPTICLIB   := -L$(HAPTICSRCDIR) -lhaptic
 COMMON_LIBS := -L$(OPENCV_LIB) $(OPENCV_LIB_NAMES)
 AMD_LIB     := -L$(AMD_OPENCL_INSTALL_PATH)/lib/x86_64 -lOpenCL $(HAPTICLIB)
