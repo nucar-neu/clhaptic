@@ -39,7 +39,7 @@ CC   = gcc -O3 -pg
 LINK = g++ -O3 -pg 
 
 # Includes
-HOME=/home/pmistry
+#HOME=/home/pmistry
 MISCINC	:= $(HOME)/clhaptic/src/libmisc
 TOPOINC	:= $(HOME)/clhaptic/src/libtopology
 PROFILERINC=$(HOME)/clhaptic/src/libprofiler
