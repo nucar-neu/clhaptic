@@ -323,8 +323,6 @@ int main(int argc , char** argv) {
 			ret = clWaitForEvents(1, &event);
 			ret = clWaitForEvents(1, &event);
 
-
-
 #if GPUPROF
 			// End Profile session
 			GPA_EndSample();
