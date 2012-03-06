@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include "FIR_tapchange.h"
 #include "analysis-devices.h"
 #include "tap-change-device.h"
 
@@ -56,6 +57,13 @@ cl_float* output = NULL;
 cl_float* coeff = NULL;
 cl_float* temp_output = NULL;
 
+cl_command_queue command_queue ;
+
+cl_command_queue cl_getfircq()
+{
+	return command_queue;
+}
+
 
 int main(int argc , char** argv) {
 
@@ -97,7 +105,7 @@ int main(int argc , char** argv) {
 	}
 
 	for( i=0;i<numTap;i++ )
-		coeff[i] = 1.0/numTap;
+		coeff[i] = 100.0/numTap;
 
 	for( i=0; i<(numData+numTap-1); i++ )
 		temp_output[i] = 0.0;
@@ -162,7 +170,7 @@ int main(int argc , char** argv) {
 	cl_context context = clCreateContext( NULL, 1, &device_id, NULL, NULL, &ret);
 
 	// Create a command queue
-	cl_command_queue command_queue = clCreateCommandQueue(context, device_id, CL_QUEUE_PROFILING_ENABLE, &ret);
+	command_queue = clCreateCommandQueue(context, device_id, CL_QUEUE_PROFILING_ENABLE, &ret);
 
 
 #ifdef GPUPROF
@@ -182,15 +190,18 @@ int main(int argc , char** argv) {
 	cl_mem temp_outputBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE,
 			sizeof(cl_float) * (numData+numTap-1), NULL, &ret);
 
-	// Create Eventlist for Timestamps
+	// Create EventList for Timestamps
 	eventList = new EventList(context, command_queue, device_id,true);
 
 	tcontrol->init_tap_change_device(context,1024, numBlocks);
-	tcontrol->init_app_profiler(eventList);
-	tcontrol->set_threshold(1024.0f, outputBuffer, 0);
-	tcontrol->build_analysis_kernel("tap-change-kernel.cl","tap_change_kernel",0);
-	tcontrol->init_value_checker(command_queue,context,device_id);
 
+	//!Stuff for Value Checker
+	tcontrol->init_value_checker(command_queue,context,device_id);
+	tcontrol->set_threshold(1024.0f, temp_outputBuffer, 0);
+
+	//! Stuff for TAP CHANGE
+	tcontrol->init_app_profiler(eventList);
+	tcontrol->build_analysis_kernel("tap-change-kernel.cl","tap_change_kernel",0);
 	tcontrol->configure_analysis_kernel();
 
 
@@ -252,6 +263,8 @@ int main(int argc , char** argv) {
 	{
 
 		/* fill in the temp_input buffer object */
+		//for(int z=0 ; z<20; z++)
+		//	printf("Input data %f\n", *(input + (count * numData) + z) );
 		ret = clEnqueueWriteBuffer(command_queue,
 				temp_outputBuffer,
 				1,
@@ -298,14 +311,17 @@ int main(int argc , char** argv) {
 					NULL,
 					&event);
 
-			tcontrol->add_phase(count);
+			clFinish(command_queue);
 			tcontrol->check_value();
+			tcontrol->add_phase(count);
+			//printf("OPENCL BUFFER USED  - FIR CODE %p\n",coeffBuffer);
+
 			tcontrol->inject_analysis(0);
+
 			clFlush(command_queue);
 			CHECK_STATUS( ret,"Error: Range kernel. (clCreateKernel)\n");
 			ret = clWaitForEvents(1, &event);
 			ret = clWaitForEvents(1, &event);
-
 
 
 
@@ -380,7 +396,7 @@ int main(int argc , char** argv) {
 	ret = clReleaseMemObject(temp_outputBuffer);
 	ret = clReleaseCommandQueue(command_queue);
 	ret = clReleaseContext(context);
-
+	ad_errChk(ret,"cleaning up");
 	free(input);
 	free(output);
 	free(coeff);
