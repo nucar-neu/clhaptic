@@ -77,6 +77,8 @@ public:
 	void record_result_on_device();
 
 	void set_kernel(char * filename, char * kernelname);
+	char * stringify_rule_result(bool rule_status);
+
 	bool test_rule(ad_rule ip_rule);
 
 	void add_to_wait_list(int k, cl_event * ip_event);

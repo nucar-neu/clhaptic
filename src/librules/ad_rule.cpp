@@ -2,6 +2,7 @@
 #include "opencl_utils.h"
 #include "ad_rule.h"
 #include "rule_type.h"
+#include "logger.h"
 
 //! See documentation on why, inline has been removed
 
@@ -126,12 +127,12 @@ size_t ad_rule::get_target_mem_size()
 	return mem_size;
 }
 
-void ad_rule::add(rule_type t, cl_mem ip_buff, float ip_value)
+void ad_rule::add(rule_type ip_t, cl_mem ip_buff, float ip_value,int ip_mem_size)
 {
 	target_buffer= ip_buff ;
-	type = t;
+	type = ip_t;
 	target_value = ip_value;
-	mem_size = sizeof(float);
+	mem_size = ip_mem_size;
 
 }
 
@@ -156,8 +157,17 @@ char * ad_rule::stringify_rule_type(rule_type t)
 void ad_rule::print_rule_details()
 {
 	if(type == RULE_TYPE_KERNEL)
-		printf("Added a RULE \t Type %s - No other details in RuleDB \n",stringify_rule_type(type));
+	{
+		print_logging("Added a RULE \t Type");
+		print_logging(stringify_rule_type(type));
+		print_logging("No other details in RuleDB ");
+	}
 	else
+	{
 		printf("Added a RULE \t Type %s \t Target Value \t %f \n",stringify_rule_type(type),target_value);
+		//print_logging("Added a RULE \t Type");
+		//print_logging(stringify_rule_type(type));
+		//print_logging("No other details in RuleDB ");
 
+	}
 }

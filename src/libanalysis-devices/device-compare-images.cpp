@@ -116,7 +116,7 @@ void compare_images::configure_analysis_kernel( int W, int H )
 void compare_images::set_feature_count_threshold(int k,cl_mem d_count)
 {
 	ad_rule threshold_rule;
-	threshold_rule.add(VALUE_MORE_THAN,d_count,float(k));
+	threshold_rule.add(VALUE_MORE_THAN,d_count,float(k),sizeof(float));
 	ruledb->add_rule(threshold_rule);
 }
 

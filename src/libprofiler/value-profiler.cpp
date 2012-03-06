@@ -65,8 +65,9 @@ inline bool value_profiler::apply_rule_exact(ad_rule ip)
 	{
 		float * target_ptr;
 		cl_int status;
+
 		target_ptr = (float *)clEnqueueMapBuffer(access_queue ,ip.get_target_buff(),
-								CL_TRUE, CL_MEM_READ_ONLY,
+								CL_TRUE, CL_MAP_READ,
 								0,ip.get_target_mem_size(),0,
 								NULL,NULL,&status);
 		//! Verify if this is needd
@@ -78,7 +79,9 @@ inline bool value_profiler::apply_rule_exact(ad_rule ip)
 			return RULE_FAILURE;
 	}
 }
-
+/**
+ * Rule to check if the data on the device is less than the target value
+ */
 inline bool value_profiler::apply_rule_less_than(ad_rule ip)
 {
 
@@ -92,14 +95,14 @@ inline bool value_profiler::apply_rule_less_than(ad_rule ip)
 		float * target_ptr;
 		cl_int status;
 		target_ptr = (float *)clEnqueueMapBuffer(access_queue,ip.get_target_buff(),
-								CL_TRUE, CL_MEM_READ_ONLY,
+								CL_TRUE, CL_MAP_READ,
 								0,ip.get_target_mem_size(),0,
 								NULL,NULL,&status);
 		ad_errChk(status,"error mapping buffer in value profiler");
 		//! Verify if this is needd
 		clFinish(access_queue);
 
-		if(float(target_ptr[0]) == ip.get_target_value())
+		if(float(target_ptr[0]) <= ip.get_target_value())
 			return RULE_SUCCESS;
 		else
 			return RULE_FAILURE;
@@ -107,6 +110,21 @@ inline bool value_profiler::apply_rule_less_than(ad_rule ip)
 	}
 }
 
+
+char * rule_result_msg[2] = {
+	"RULE_FAILURE",  	// 0
+    "RULE_SUCCESS",		//-1
+};
+
+
+char * value_profiler::stringify_rule_result(bool rule_status)
+{
+	return rule_result_msg[int (rule_status) ];
+
+}
+/**
+ * Rule to check if the data on the device is more than the target value
+ */
 inline bool value_profiler::apply_rule_more_than(ad_rule ip)
 {
 	if(profiler_state == DISABLED)
@@ -118,14 +136,18 @@ inline bool value_profiler::apply_rule_more_than(ad_rule ip)
 	{
 		float * target_ptr;
 		cl_int status;
+		printf("OPENCL BUFFER USED HAP CODE %p\n",ip.get_target_buff());
 		target_ptr = (float *)clEnqueueMapBuffer(access_queue,ip.get_target_buff(),
-								CL_TRUE, CL_MEM_READ_ONLY,
+								CL_TRUE, CL_MAP_READ,
 								0,ip.get_target_mem_size(),0,
 								NULL,NULL,&status);
 		ad_errChk(status,"error mapping buffer in value profiler");
-		clFinish(access_queue);
+		status = clFinish(access_queue);
+		ad_errChk(status,"error mapping buffer in value profiler");
+
 		//printf("Value seen from memory %f and Target is %f \n", target_ptr[0],ip.get_target_value());
-		printf("Value seen from memory Target is %f \n",ip.get_target_value());
+		for(int i =0 ; i< 64;i++)
+			printf("Value seen from memory mapping is %f \t Mapping %d \n",target_ptr[i],ip.get_target_mem_size());
 		//getchar();
 
 		if(float(target_ptr[0]) > ip.get_target_value())
@@ -151,7 +173,6 @@ value_profiler::value_profiler()
 	profiler_state = ENABLED;
 	len_wait_list = 0;
 	wait_list = (cl_event * )malloc(sizeof(cl_event)*MAX_LEN_WAITLIST);
-
 
 }
 
@@ -206,7 +227,8 @@ bool value_profiler::test_rule(ad_rule ip_rule)
 {
 	if(ip_rule.get_type() == RULE_TYPE_KERNEL)
 	{
-		printf("foo");
+		print_warning("NOT Supported");
+		exit(-1);
 	}
 	else
 	{
@@ -235,7 +257,7 @@ bool value_profiler::test_rule(ad_rule ip_rule)
 			}
 			if(ip_rule.get_type() == UNDEFINED_RULE_TYPE)
 			{
-				print_logging("rule not defined yet");
+				print_logging("rule not defined yet, Cannot test");
 				exit(-1);
 			}
 		}
@@ -246,5 +268,6 @@ bool value_profiler::test_rule(ad_rule ip_rule)
 	}
 	print_logging("Should not get here");
 	exit(-1);
+	// Added this so the compiler doesnt moan
 	return RULE_FAILURE;
 }

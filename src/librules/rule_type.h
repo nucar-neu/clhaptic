@@ -13,8 +13,9 @@
 
 #define UNDEFINED_RULE_TYPE 1111
 
-#define RULE_SUCCESS 999
+#define RULE_FAILURE 0
 
-#define RULE_FAILURE 998
+#define RULE_SUCCESS 1
+
 
 typedef cl_int rule_type;

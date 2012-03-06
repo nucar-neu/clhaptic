@@ -55,5 +55,10 @@ cl_program cl_CompileProgram_from_array(char * source,
 
 unsigned int idivup(unsigned int , unsigned int);
 
+// Generate a filename based on the current time
+char* createFilenameWithTimestamp() ;
+
+//! Generate filename based on the current time and prefix string
+char* createFilenameWithTimestamp(char * prefix_str);
 
 #endif // _OPENCL_UTILS_H_
