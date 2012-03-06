@@ -359,7 +359,38 @@ void ad_setKernelArg(cl_kernel kernel, unsigned int index, size_t size,
 }
 
 
+char* createFilenameWithTimestamp(char * prefix_str)
+{
+    int maxStringLen = 100;
+    char* timeStr = new char[maxStringLen];
 
+    time_t rawtime;
+    struct tm* timeStruct;
+
+    time(&rawtime);
+    timeStruct = localtime(&rawtime);
+
+    strftime(timeStr, maxStringLen, "/Events_%Y_%m_%d_%H_%M_%S.eventlog", timeStruct);
+
+    return timeStr;
+}
+
+
+char* createFilenameWithTimestamp()
+{
+    int maxStringLen = 100;
+    char* timeStr = new char[maxStringLen];
+
+    time_t rawtime;
+    struct tm* timeStruct;
+
+    time(&rawtime);
+    timeStruct = localtime(&rawtime);
+
+    strftime(timeStr, maxStringLen, "/Events_%Y_%m_%d_%H_%M_%S.eventlog", timeStruct);
+
+    return timeStr;
+}
 
 //! A general compiler driver that returns a program
 cl_program cl_CompileProgram_from_array(char * source,

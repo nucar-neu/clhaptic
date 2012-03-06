@@ -27,6 +27,8 @@ private:
 	void * target_ptr;
 	int buffer_offset;
 
+	bool rule_result;
+
 	//! Added for checking more than one value
 	size_t mem_size;
 
@@ -51,7 +53,7 @@ public:
 
 	//! Stub for adding the "kernel" type rules
 	void add(rule_type t);
-	void add(rule_type, cl_mem, float val);
+	void add(rule_type, cl_mem, float val, int mem_size);
 	//! Interface to call all the apply_ functions
 	void print_rule_details();
 	bool test_rule(cl_context ctx, cl_command_queue queue);

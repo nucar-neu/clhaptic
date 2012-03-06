@@ -180,7 +180,7 @@ void analysis_device::sync()
  */
 void analysis_device::alloc_kernel_mem(int k)
 {
-	printf("Resizing Kernel Vector - Not Good\n");
+	print_warning("Resizing Kernel Vector - Not Good");
 	n_analysis_kernels = k;
 	//! Old api was to have a array of analysis_kernels instead of a vector
 	//!analysis_kernels = ( cl_kernel *)malloc(k*sizeof(cl_kernel));
@@ -264,7 +264,7 @@ void analysis_device::configure_analysis_rootdevice()
 	// Initialize the profiler for the analysis device
 	profiler = new EventList(context,queue,device,1);
 
-	printf("Analysis Device Set Up Successfully\n");
+	print_logging("Analysis Device Set Up Successfully");
 }
 
 //! Either create a new profiler object or use the input EventList provided
@@ -272,7 +272,7 @@ void analysis_device::init_app_profiler(EventList * profiler_locn)
 {
 	if(profiler_locn == NULL)
 	{
-		printf("Init new App profiler");
+		print_logging("Init new App profiler");
 		app_profiler = new EventList(context,queue,device,TRUE);
 	}
 	else
@@ -338,8 +338,7 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 }
 void analysis_device::resolve_waiting()
 {
-	print_warning("Warning - No synchronization function provided\n");
-
+	print_warning("No synchronization function provided by base class");
 }
 
 //! No arguments means to test all rules.
