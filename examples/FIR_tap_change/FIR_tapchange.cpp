@@ -193,7 +193,8 @@ int main(int argc , char** argv) {
 	// Create EventList for Timestamps
 	eventList = new EventList(context, command_queue, device_id,true);
 
-	tcontrol->init_tap_change_device(context,1024, numBlocks);
+	int num_iterations_tcontrol = 100000;
+	tcontrol->init_tap_change_device(context,1024, num_iterations_tcontrol );
 
 	//!Stuff for Value Checker
 	tcontrol->init_value_checker(command_queue,context,device_id);
@@ -224,6 +225,10 @@ int main(int argc , char** argv) {
 	ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&coeffBuffer);
 	ret = clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&temp_outputBuffer);
 	ret = clSetKernelArg(kernel, 3, sizeof(cl_uint), (void *)&numTap);
+
+	tcontrol->profiler->resetClocks();
+	eventList->resetClocks();
+
 
 	// Initialize Memory Buffer
 	ret = clEnqueueWriteBuffer(command_queue,
