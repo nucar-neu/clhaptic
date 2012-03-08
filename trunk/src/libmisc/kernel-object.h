@@ -1,8 +1,11 @@
 #ifndef __KERNEL_OBJECT_
 #define __KERNEL_OBJECT_
 
-
+#include "stdlib.h"
+#include "stdio.h"
+#include "math.h"
 #include <CL/cl.h>
+
 
 //! A kernel object containing all the necessary parameters to launch a kernel.
 //! Dont add a cl_command_queue here because we dont know what device kernel gets thrown on
