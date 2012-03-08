@@ -11,8 +11,12 @@ Installing the required libraries.
 #Haptic Installation steps
 
 aclocal
-autohead
+
+autoheader
+
 autoconf
+
+
 # This may be necessary to generate Install.sh
 automake --add-missing
 ./configure
