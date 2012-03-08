@@ -21,11 +21,11 @@ int ad_rule_vec::active_rule_count()
 	return rule_list.size();
 }
 
-void ad_rule_vec::apply_rule(cl_context ctx, cl_command_queue queue, int i)
-{
-	rule_list.at(i).test_rule(ctx,queue);
-
-}
+//void ad_rule_vec::apply_rule(cl_context ctx, cl_command_queue queue, int i)
+//{
+//	rule_list.at(i).test_rule(ctx,queue);
+//
+//}
 
 ad_rule ad_rule_vec::get_rule(int i)
 {

@@ -333,12 +333,12 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 			profiler->add(analysis_event);
 
 	}
-	clFlush(queue);
+	clFinish(queue);
 
 }
 void analysis_device::resolve_waiting()
 {
-	print_warning("No synchronization function provided by base class");
+	print_warning("No synchronization function provided by Derived class, Base Class stub called");
 }
 
 //! No arguments means to test all rules.

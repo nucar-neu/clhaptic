@@ -146,8 +146,8 @@ inline bool value_profiler::apply_rule_more_than(ad_rule ip)
 		ad_errChk(status,"error mapping buffer in value profiler");
 
 		//printf("Value seen from memory %f and Target is %f \n", target_ptr[0],ip.get_target_value());
-		for(int i =0 ; i< 64;i++)
-			printf("Value seen from memory mapping is %f \t Mapping %d \n",target_ptr[i],ip.get_target_mem_size());
+		//for(int i =0 ; i< 64;i++)
+		//	printf("Value seen from memory mapping is %f \t Mapping %d \n",target_ptr[i],ip.get_target_mem_size());
 		//getchar();
 
 		if(float(target_ptr[0]) > ip.get_target_value())

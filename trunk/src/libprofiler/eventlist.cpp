@@ -22,6 +22,9 @@ EventList::EventList()
 	profiler_name = "Default Profiler";
     //! Done not to mess with Dana's interfaces
 	record_profile = ENABLED;
+	//! Initializing to 0 so that you atleast get only offseted data if the resetClocks() function isnt called
+	gpu_timer_start = 0;
+	cpu_timer_start = 0;
 }
 char * EventList::get_profiler_name()
 {
@@ -55,6 +58,7 @@ EventList::EventList(cl_context context, cl_command_queue commandQueue,
     this->free_events = free_events;
 
     // Synchronize the CPU and GPU clocks and use the value as time-zero
+    printf("reset clocks\n");
     this->resetClocks();
 
     //!EventList::record_profile ENABLED by default so as not to mess with Dana's interfaces
@@ -494,7 +498,6 @@ cl_time EventList::getEventValue(cl_event event,
 {
     
     cl_int status; 
-
     cl_ulong value;
 
     // Get the requested timer value from OpenCL
