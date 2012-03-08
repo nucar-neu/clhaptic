@@ -2,6 +2,8 @@
  * eventlist-phasecontrol.cpp
  *
  */
+#include "math.h"
+#include "stdlib.h"
 #include "stdio.h"
 #include "eventlist.h"
 #include "phasecontrol.h"
@@ -101,7 +103,7 @@ void EventList::analysePhaseChange()
 		cl_time t1 = getEventDelta(event1,CL_PROFILING_COMMAND_END) -
 					 getEventDelta(event1,CL_PROFILING_COMMAND_START);
 		printf("%d\t T0 \t %ld \t \t T1 \t %ld \n",i,t0,t1);
-		if( abs(t0 - t1) > config.time_threshold)
+		if( fabs(t0 - t1) > config.time_threshold)
 		{
 			if(config.verbose_messages == ENABLED)
 			{

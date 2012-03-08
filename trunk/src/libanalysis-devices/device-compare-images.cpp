@@ -1,5 +1,4 @@
-
-#include <math.h>
+#include "math.h"
 #include <eventlist.h>
 #include "device-compare-images.h"
 
@@ -79,7 +78,7 @@ bool compare_images::get_analysis_result()
  		diff_value = diff_value + data[i];
 	}
 
-	if(abs(diff_value) > THRESHOLD)
+	if(fabs(diff_value) > THRESHOLD)
 		return_state = ENABLED;
 	else
 		return_state = DISABLED;

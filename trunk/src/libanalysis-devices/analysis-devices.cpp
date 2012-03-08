@@ -1,6 +1,7 @@
 #include <CL/cl_ext.h>
 #include <CL/cl.h>
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "analysis-devices-utils.h"
 #include "kernel-object.h"
