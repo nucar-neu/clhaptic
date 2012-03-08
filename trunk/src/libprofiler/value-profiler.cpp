@@ -1,4 +1,5 @@
 #include "stdio.h"
+#include "stdlib.h"
 #include <CL/cl.h>
 #include "logger.h"
 #include "opencl_utils.h"
