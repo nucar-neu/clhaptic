@@ -4,6 +4,7 @@
  *  Created on: 08-Sep-2011
  */
 
+#include "stdlib.h"
 #include <stdio.h>
 #include "phasecontrol.h"
 #include "eventlist.h"
