@@ -8,6 +8,7 @@
 #define __ANALYSIS_DEVICES_UTILS_H_
 
 #include <CL/cl.h>
+#include "stdlib.h"
 #include "opencl_utils.h"
 
 

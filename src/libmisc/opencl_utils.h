@@ -2,7 +2,8 @@
 #define __OPENCL_UTILS_H_
 
 #include "string.h"
-
+#include "stdlib.h"
+#include "math.h"
 #include <CL/cl.h>
 
 //! Macro to enable / disable profiling
