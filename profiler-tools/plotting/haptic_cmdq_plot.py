@@ -20,6 +20,7 @@ d2temp=d2.Queue[0]
 
 div = 1000000.0
 
+#Data Gathering and formatting using data structures from PANDAS
 d1['Queue']=d1['Queue'] - d1temp
 d1['Submit']=d1['Submit'] - d1temp
 d1['Start']=d1['Start'] - d1temp
@@ -37,10 +38,14 @@ d2['End'] = d2['End']=d2['End']+ d1.Queue[(d2.Events[0])]
 
 
 
-
+#Figure Plot for the Command Queue Execuion times
 fig = plt.figure()
 ax = fig.add_subplot(111)
-ax.broken_barh([ (d1.Queue[0]/div,d1.End[max(d1.index)]/div)] , (5, 5),label='box1', facecolors='blue')
+for i in d1.index:
+	if (d1.Type[i] == 'Kernel'):
+		ax.plot(d1.Queue[i]/div, 7.5,'r+')
+		
+ax.broken_barh([ (d1.Queue[0]/div,d1.End[max(d1.index)]/div)] , (5, 5),label='box1', facecolors=(1,1,1,0))
 
 for i in d2.index:
 	ax.broken_barh([ (d2.Queue[i]/div,(d2.End[i]/div)-d2.Queue[i]/div)] , (10, 5),label='box2',facecolors=('red'))
