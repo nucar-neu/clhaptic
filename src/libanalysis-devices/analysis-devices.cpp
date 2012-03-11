@@ -254,7 +254,7 @@ void analysis_device::configure_analysis_rootdevice()
 	//   };
 	//setup_fission(topo,partitionPrty);
 
-	setup_fission(topo);
+	setup_root_queue(topo,TRUE);
 
 	//! Topo now has populated with the analysis device
 	queue = topo->rootQueue[0];
@@ -266,6 +266,8 @@ void analysis_device::configure_analysis_rootdevice()
 	profiler = new EventList(context,queue,device,1);
 
 	print_logging("Analysis Device Set Up Successfully");
+	opencl_arch = ROOT_DEVICE;
+
 }
 
 //! Either create a new profiler object or use the input EventList provided

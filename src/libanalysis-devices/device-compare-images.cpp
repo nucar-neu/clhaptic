@@ -98,8 +98,15 @@ void compare_images::configure_analysis_kernel( int W, int H )
 	kernel_vec.at(0)->dim_localws = 2;
 	kernel_vec.at(0)->localws[0] = 16;
 	kernel_vec.at(0)->localws[1] = 16;
-	kernel_vec.at(0)->globalws[0] = W;
-	kernel_vec.at(0)->globalws[1] = H;
+
+	//printf("New ws size %d\n",new_ws);
+	//kernel_vec.at(0)->globalws[0] = W;
+	//kernel_vec.at(0)->globalws[1] = H;
+
+	kernel_vec.at(0)->globalws[0] = idivup(W,16);
+	kernel_vec.at(0)->globalws[1] = idivup(H,16);
+
+
 	kernel_vec.at(0)->localmemsize = (sizeof(float)*(kernel_vec.at(0)->localws[0])*(kernel_vec.at(0)->localws[1]));
 
  	ad_setKernelArg(getKernel(0), 0,sizeof(cl_mem),(void *)&p_img);

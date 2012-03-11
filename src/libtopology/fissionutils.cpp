@@ -87,7 +87,7 @@ void setup_gpu_queue(cl_context  ip_ctx,
 }
 
 void setup_root_queue(fission_topology * topo,
-					bool enable_profiling = TRUE)
+					bool enable_profiling )
 {
  	cl_platform_id  * platforms ;
 	cl_int status;
