@@ -10,7 +10,7 @@
 
 __kernel void tap_change_kernel(
 		__global float * input_tap,
-		int n_tap, int n_iterations)
+		int n_iterations, int n_tap)
 {
 
 	float old_tap = input_tap[get_global_id(0)];
