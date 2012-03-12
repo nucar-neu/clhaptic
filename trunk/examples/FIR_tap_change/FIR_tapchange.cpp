@@ -19,7 +19,7 @@
 
 #include <CL/cl.h>
 
-#include "fir.pb.h"
+//#include "fir.pb.h"
 
 #ifdef GPUPROF
 #include "inc/GPUPerfAPI.h"
@@ -72,9 +72,9 @@ int main(int argc , char** argv) {
 	int i,count;
 	int local;
 
-	if (argc < 3)
+	if (argc < 4)
 	{
-		printf(" Usage : ./auto_exec.sh <numBlocks> <numData> <numTap>");
+		printf(" Usage : ./<path to binary> <numBlocks> <numData> <Tap Change Iterations>\n");
 		exit(0);
 	}
 	if (argc > 1)
@@ -193,7 +193,10 @@ int main(int argc , char** argv) {
 	// Create EventList for Timestamps
 	eventList = new EventList(context, command_queue, device_id,true);
 
-	int num_iterations_tcontrol = 100000;
+	// Tap Change Device Control
+
+	/*int num_iterations_tcontrol = 100000;*/
+	int num_iterations_tcontrol = atoi(argv[3]);
 	tcontrol->init_tap_change_device(context,1024, num_iterations_tcontrol );
 
 	//!Stuff for Value Checker
