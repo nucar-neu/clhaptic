@@ -20,10 +20,10 @@ OPENCV_LIB := /usr/lib64
 USE_OPENCV_VERSION := 2.1
 
 
-OPENCV_LIB_NAMES    :=  -lopencv_imgproc -lopencv_core -lopencv_highgui -lopencv_video
+#OPENCV_LIB_NAMES    :=  -lopencv_imgproc -lopencv_core -lopencv_highgui -lopencv_video
 
 ifeq ($(USE_OPENCV_VERSION),2.1)
-OPENCV_LIB_NAMES    :=  -lcxcore -lcv -lcvaux -lhighgui -lml
+#OPENCV_LIB_NAMES    :=  -lcxcore -lcv -lcvaux -lhighgui -lml
 endif
 
 # Basic directory setup 
