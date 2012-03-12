@@ -38,8 +38,6 @@ private:
 	//! Whether the analysis_device is ENABLED or DISABLED
 	bool device_state;
 
-	//! This could map to any OpenCL device or subdevice
-	cl_command_queue queue;
 	//! Used OpenCL context. This should be the same context as the
 	cl_context context;
 	//! Device ID of the analysis device
@@ -73,6 +71,11 @@ protected:
 	int frequency;
 
 public:
+
+	//! This could map to any OpenCL device or subdevice
+	cl_command_queue queue;
+
+
 	//!Adding the resolve waiting
 	virtual void resolve_waiting();
 
@@ -95,6 +98,7 @@ public:
 	void configure_analysis_rootdevice();
 
 	void configure_analysis_device_gpu(cl_context );
+
 
 
 	void copyHostToAd( cl_mem buff, void * mem, size_t mem_size);

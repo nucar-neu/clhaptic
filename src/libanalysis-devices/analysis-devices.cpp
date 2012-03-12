@@ -11,10 +11,10 @@
 #include "logger.h"
 
 
-void * analysis_device::mapBuffer(cl_mem mem, size_t mem_size, cl_mem_flags flags)
+void * analysis_device::mapBuffer(cl_mem mem, size_t mem_size, cl_map_flags flags)
 {
     cl_int status;
-    void *ptr;
+    void *ptr = NULL;
 
 	/*
 	 * 	static int eventCnt = 0;
@@ -25,22 +25,38 @@ void * analysis_device::mapBuffer(cl_mem mem, size_t mem_size, cl_mem_flags flag
 		}
 	*/
     //! Blocking map operation used, no offset
-    ptr = (void *)clEnqueueMapBuffer(queue,
-								mem, CL_TRUE, flags,
-								 0, mem_size, 0, NULL,
-								 NULL,
-								 //eventPtr,
-								 &status);
-
+    printf("memory mapped is %d \n",mem_size);
+    ptr = clEnqueueMapBuffer(queue,
+							mem, CL_TRUE, flags,
+							 0, mem_size, 0, NULL,
+							 NULL,
+							 //eventPtr,
+							 &status);
+    sync();
     ad_errChk(status, "Error mapping a buffer", true);
+
+    if(ptr == NULL )
+    {
+    	print_warning("Problem Mapping pointer");
+    	exit(-1);
+    }
+    //float * k = (float *)ptr;
+    //for(int i= 0; i< mem_size;i++)
+    //	printf("Float k is %f\n",ptr[i]);
 
     //if(eventsEnabled) {
     //    char* eventStr = catStringWithInt("MapBuffer", eventCnt++);
     //    events->add(*eventPtr, eventStr);
     //}
 
+
+    //status = clEnqueueUnmapMemObject(queue, mem, ptr, 0, NULL, NULL);
+    //ad_errChk(status, "Error unmapping a buffer or image", true);
+
+
     return ptr;
 }
+
 
 
 void result_buffer::allocate_buffer(size_t size, cl_context ctx)
@@ -122,7 +138,8 @@ void analysis_device::copyHostToAd(cl_mem buff,void * mem,  size_t mem_size)
 {
 	cl_int status ;
 	status = clEnqueueWriteBuffer(queue,buff,1,0,mem_size,mem,0,NULL,NULL);
-	ad_sync(queue);
+	sync();
+
 	ad_errChk(status, "copyHostToAd Error");
 }
 
@@ -336,7 +353,8 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 			profiler->add(analysis_event);
 
 	}
-	clFinish(queue);
+	status= clFinish(queue);
+	ad_errChk(status,"error in waiting after enq kernel",TRUE);
 
 }
 void analysis_device::resolve_waiting()

@@ -22,16 +22,24 @@ void compare_images::init_value_profiler()
 {
 	v_profiler->init(getCommandQueue(),getContext());
 }
+
+
+void compare_images::set_compare_threshold()
+{
+	printf("Enter Value to threshold\n");
+	scanf("%f",&THRESHOLD);
+	printf("Set Threshold to %f\n",THRESHOLD);
+}
 void compare_images::init_buffers(size_t mem_size)
 {
 
     cl_int status;
     p_img = clCreateBuffer(getContext(),
-						CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR,
+						CL_MEM_READ_WRITE,
 						mem_size, NULL, &status);
     ad_errChk(status, "Error allocating pinned memory", true);
     n_img = clCreateBuffer(getContext(),
-						CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR,
+						CL_MEM_READ_WRITE ,
 						mem_size, NULL, &status);
 	ad_errChk(status, "Error allocating pinned memory", true);
 
@@ -66,17 +74,26 @@ bool compare_images::get_analysis_result()
 {
 	bool return_state;
 	//! Read results from processing
+
 	sync();
- 	float * data = (float *)mapBuffer(opbuff.buffer, opbuff.mem_size,CL_MAP_READ);
+
+	float * data = (float *)mapBuffer(opbuff.buffer, opbuff.mem_size,CL_MAP_READ);
+	//cl_int status = CL_SUCCESS;
+	//float *data = (float *)malloc(opbuff.mem_size);
+	//status = clEnqueueReadBuffer(queue,opbuff.buffer,TRUE,0,opbuff.mem_size,data,0,NULL,NULL);
+
+
  	sync();
  	float diff_value = 0.0f;
 	//for(int i=0;i < (kernel_vec.at(0)->globalws[0]); i++)
  	int i;
-	for(i=0; i < 10; i++)
+	for(i=0; i < 20; i++)
 	{
-		printf("Data is %f \n", data[i]);
+		//		printf("Data is %f \n", data[i]);
  		diff_value = diff_value + data[i];
 	}
+
+
 
 	if(fabs(diff_value) > THRESHOLD)
 		return_state = ENABLED;

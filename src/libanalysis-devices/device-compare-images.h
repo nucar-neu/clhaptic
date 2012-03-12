@@ -12,6 +12,7 @@
 #define __COMPARE_DEVICE_
 
 
+
 class compare_images : public analysis_device
 {
 
@@ -56,6 +57,7 @@ public:
 			cl_mem present_image, cl_mem next_image,
 			int W, int H );
 
+	void set_compare_threshold();
 	void init_value_profiler();
 };
 
