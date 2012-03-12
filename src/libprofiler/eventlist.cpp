@@ -412,33 +412,48 @@ void EventList::dumpEvents(char* path, char * ip_filename)
         fprintf(fp, "Info;\tHost %s\n", hostname);
     }
 #endif
-
+printf("Timer start %lu \n",this->gpu_timer_start) ;
     // Write the events to file with each field separated by semicolons
     for(int i = 0; i < (int)this->event_list.size(); i++) {
         fprintf(fp, "%s;\t%s;\t%lu;\t%lu;\t%lu;\t%lu\n", 
             this->event_list[i]->type,
             this->event_list[i]->name, 
-            getEventValue(this->event_list[i]->event, 
-                CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start,
-            getEventValue(this->event_list[i]->event, 
-                CL_PROFILING_COMMAND_SUBMIT) - this->gpu_timer_start,
-            getEventValue(this->event_list[i]->event, 
-                CL_PROFILING_COMMAND_START) - this->gpu_timer_start,
-            getEventValue(this->event_list[i]->event, 
-                CL_PROFILING_COMMAND_END) - this->gpu_timer_start);
+            ulong( getEventValue(this->event_list[i]->event, 
+                	CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start ),
+	    ulong( getEventValue(this->event_list[i]->event, 
+	                CL_PROFILING_COMMAND_SUBMIT) - this->gpu_timer_start ),
+            ulong( getEventValue(this->event_list[i]->event, 
+        	        CL_PROFILING_COMMAND_START) - this->gpu_timer_start ),
+            ulong( getEventValue(this->event_list[i]->event, 
+        	        CL_PROFILING_COMMAND_END) - this->gpu_timer_start )  
+	);
+/*
+        printf("%s;\t%s;\t%lu;\t%lu;\t%lu;\t%lu\n", 
+            this->event_list[i]->type,
+            this->event_list[i]->name, 
+            ulong(	getEventValue(this->event_list[i]->event, 
+	                CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start ),
+            ulong(	getEventValue(this->event_list[i]->event, 
+                	CL_PROFILING_COMMAND_SUBMIT) - this->gpu_timer_start ),
+            ulong(	getEventValue(this->event_list[i]->event, 
+	                CL_PROFILING_COMMAND_START) - this->gpu_timer_start ),
+	    ulong(	getEventValue(this->event_list[i]->event, 
+	                CL_PROFILING_COMMAND_END) - this->gpu_timer_start) );
+*/
     }
     for(int i = 0; i < (int)this->user_event_list.size(); i++) {
         fprintf(fp, "%s;\t%s;\t%lu;\t%lu;\t%lu;\t%lu\n", 
             this->user_event_list[i]->type,
             this->user_event_list[i]->name, 
-            getUserEventValue(this->user_event_list[i]->event, 
-                CL_PROFILING_COMMAND_QUEUED) - this->cpu_timer_start,
-            getUserEventValue(this->user_event_list[i]->event, 
-                CL_PROFILING_COMMAND_SUBMIT) - this->cpu_timer_start,
-            getUserEventValue(this->user_event_list[i]->event, 
-                CL_PROFILING_COMMAND_START) - this->cpu_timer_start,
-            getUserEventValue(this->user_event_list[i]->event, 
-                CL_PROFILING_COMMAND_END) - this->cpu_timer_start);
+	    ulong(     getUserEventValue(this->user_event_list[i]->event, 
+                CL_PROFILING_COMMAND_QUEUED) - this->cpu_timer_start ),
+            ulong(	getUserEventValue(this->user_event_list[i]->event, 
+                CL_PROFILING_COMMAND_SUBMIT) - this->cpu_timer_start ),
+            ulong(	getUserEventValue(this->user_event_list[i]->event, 
+                CL_PROFILING_COMMAND_START) - this->cpu_timer_start  ),
+            ulong(	getUserEventValue(this->user_event_list[i]->event, 
+                CL_PROFILING_COMMAND_END) - this->cpu_timer_start )
+	);
     }
     //!Bound check
     if(event_list.size() > 0)
@@ -570,14 +585,14 @@ void EventList::printEvents() {
                \n\tCompleted:  %lu\n", 
             this->event_list[i]->name, 
             this->event_list[i]->type,
-            getEventValue(this->event_list[i]->event, 
-                CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start,
-            getEventValue(this->event_list[i]->event, 
-                CL_PROFILING_COMMAND_SUBMIT) - this->gpu_timer_start,
-            getEventValue(this->event_list[i]->event, 
-                CL_PROFILING_COMMAND_START) - this->gpu_timer_start,
-            getEventValue(this->event_list[i]->event, 
-                CL_PROFILING_COMMAND_END) - this->gpu_timer_start);
+            ulong( getEventValue(this->event_list[i]->event, 
+                CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start ),
+            ulong( getEventValue(this->event_list[i]->event, 
+                CL_PROFILING_COMMAND_SUBMIT) - this->gpu_timer_start ),
+            ulong( getEventValue(this->event_list[i]->event, 
+                CL_PROFILING_COMMAND_START) - this->gpu_timer_start ),
+            ulong( getEventValue(this->event_list[i]->event, 
+                CL_PROFILING_COMMAND_END) - this->gpu_timer_start )  );
     }
     for(int i = 0; i < (int)this->user_event_list.size(); i++) {
         printf("%s (%s)\
@@ -587,14 +602,15 @@ void EventList::printEvents() {
                \n\tCompleted:  %lu\n", 
             this->user_event_list[i]->name, 
             this->user_event_list[i]->type,
-            getUserEventValue(this->user_event_list[i]->event, 
-                CL_PROFILING_COMMAND_QUEUED) - this->cpu_timer_start,
-            getUserEventValue(this->user_event_list[i]->event, 
-                CL_PROFILING_COMMAND_SUBMIT) - this->cpu_timer_start,
-            getUserEventValue(this->user_event_list[i]->event, 
-                CL_PROFILING_COMMAND_START) - this->cpu_timer_start,
-            getUserEventValue(this->user_event_list[i]->event, 
-                CL_PROFILING_COMMAND_END) - this->cpu_timer_start);
+            ulong( getUserEventValue(this->user_event_list[i]->event, 
+                CL_PROFILING_COMMAND_QUEUED) - this->cpu_timer_start ),
+            ulong( getUserEventValue(this->user_event_list[i]->event, 
+                CL_PROFILING_COMMAND_SUBMIT) - this->cpu_timer_start ),
+            ulong( getUserEventValue(this->user_event_list[i]->event, 
+                CL_PROFILING_COMMAND_START) - this->cpu_timer_start  ),
+            ulong( getUserEventValue(this->user_event_list[i]->event, 
+                CL_PROFILING_COMMAND_END) - this->cpu_timer_start) 
+	) ;
     }
 }
 
