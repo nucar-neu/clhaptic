@@ -97,6 +97,7 @@ public:
 	//! Set up Fission, create root context and subqueues
 	void configure_analysis_rootdevice();
 
+	void configure_analysis_device_cpu(cl_context );
 	void configure_analysis_device_gpu(cl_context );
 
 
