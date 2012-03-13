@@ -26,4 +26,6 @@ void multi_device_single_context(fission_topology *);
 
 void setup_gpu_queue(cl_context ctx, fission_topology * topo,bool enable_profiling);
 
+void setup_cpu_queue(cl_context  ip_ctx,fission_topology * topo, bool enable_profiling );
+
 #endif // __FISSION_UTILS_

@@ -244,6 +244,22 @@ void analysis_device::build_analysis_kernel(char * filename, char * kernel_name,
 
 }
 
+void analysis_device::configure_analysis_device_cpu(cl_context ctx)
+{
+	topo = new fission_topology;
+
+	setup_cpu_queue(ctx,topo, TRUE);
+	printf("got here\n");
+	printf("Queue is %d\n",topo->cpu_queue_no);
+	queue = topo->rootQueue[topo->cpu_queue_no];
+	device = topo->devices[topo->cpu_queue_no];
+	context = topo->root_context;
+	printf("Context is %p \t %p \n", context, topo->root_context);
+	profiler = new EventList(context,queue,device,1);
+	opencl_arch = ROOT_DEVICE;
+}
+
+
 void analysis_device::configure_analysis_device_gpu(cl_context ctx)
 {
 	topo = new fission_topology;

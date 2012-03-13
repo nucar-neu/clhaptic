@@ -87,9 +87,9 @@ bool compare_images::get_analysis_result()
  	float diff_value = 0.0f;
 	//for(int i=0;i < (kernel_vec.at(0)->globalws[0]); i++)
  	int i;
-	for(i=0; i < 20; i++)
+	for(i=0; i < 10; i++)
 	{
-		//		printf("Data is %f \n", data[i]);
+		printf("Data is %f \n", data[i]);
  		diff_value = diff_value + data[i];
 	}
 
