@@ -415,16 +415,16 @@ void EventList::dumpEvents(char* path, char * ip_filename)
 printf("Timer start %lu \n",this->gpu_timer_start) ;
     // Write the events to file with each field separated by semicolons
     for(int i = 0; i < (int)this->event_list.size(); i++) {
-        fprintf(fp, "%s;\t%s;\t%lu;\t%lu;\t%lu;\t%lu\n", 
+        fprintf(fp, "%s;\t%s;\t%f;\t%f;\t%f;\t%f\n",
             this->event_list[i]->type,
             this->event_list[i]->name, 
-            ulong( getEventValue(this->event_list[i]->event, 
+            float( getEventValue(this->event_list[i]->event,
                 	CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start ),
-	    ulong( getEventValue(this->event_list[i]->event, 
+	    float( getEventValue(this->event_list[i]->event,
 	                CL_PROFILING_COMMAND_SUBMIT) - this->gpu_timer_start ),
-            ulong( getEventValue(this->event_list[i]->event, 
+            float( getEventValue(this->event_list[i]->event,
         	        CL_PROFILING_COMMAND_START) - this->gpu_timer_start ),
-            ulong( getEventValue(this->event_list[i]->event, 
+            float( getEventValue(this->event_list[i]->event,
         	        CL_PROFILING_COMMAND_END) - this->gpu_timer_start )  
 	);
 /*
