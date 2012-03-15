@@ -70,6 +70,18 @@ void compare_images::track_feature_count()
 
 }
 
+
+float get_rand(int low, int high)
+{
+  srand ( time(NULL) );
+	float isecret;
+  /* generate secret number: */
+  float r = (float)rand()/(float)RAND_MAX;
+
+  isecret = r*10.0 + 140.0;
+  return isecret;
+
+}
 bool compare_images::get_analysis_result()
 {
 	bool return_state;
@@ -77,24 +89,25 @@ bool compare_images::get_analysis_result()
 
 	sync();
 
-	float * data = (float *)mapBuffer(opbuff.buffer, opbuff.mem_size,CL_MAP_READ);
+	float * data = (float *)mapBuffer(opbuff.buffer, 10*sizeof(float),CL_MAP_READ);
+
 	//cl_int status = CL_SUCCESS;
 	//float *data = (float *)malloc(opbuff.mem_size);
 	//status = clEnqueueReadBuffer(queue,opbuff.buffer,TRUE,0,opbuff.mem_size,data,0,NULL,NULL);
 
 
- 	sync();
+ 	//sync();
  	float diff_value = 0.0f;
 	//for(int i=0;i < (kernel_vec.at(0)->globalws[0]); i++)
  	int i;
 	for(i=0; i < 10; i++)
 	{
-		printf("Data is %f \n", data[i]);
+	//	printf("Data is %f \n", data[i]);
  		diff_value = diff_value + data[i];
 	}
 
 
-
+//	diff_value = get_rand(0,150);
 	if(fabs(diff_value) > THRESHOLD)
 		return_state = ENABLED;
 	else
