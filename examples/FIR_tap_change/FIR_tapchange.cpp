@@ -14,7 +14,7 @@
 #include "FIR_tapchange.h"
 #include "analysis-devices.h"
 #include "tap-change-device.h"
-
+#include <sys/time.h>
 #include "eventlist.h"
 
 #include <CL/cl.h>
@@ -86,7 +86,7 @@ int main(int argc , char** argv) {
 
 
 	/** Declare the Filter Properties */
-	numTap = 1024;
+	numTap = 4096;
 	numTotalData = numData * numBlocks;
 	local = numData/(32*8);			// Variable maintained to make 8 warps per Local group
 	printf("FIR Filter\n Data Samples : %d \n NumBlocks : %d \n Local Workgroups : %d\n", numData,numBlocks,local);
@@ -172,6 +172,11 @@ int main(int argc , char** argv) {
 	// Create a command queue
 	command_queue = clCreateCommandQueue(context, device_id, CL_QUEUE_PROFILING_ENABLE, &ret);
 
+	// Time of day calculation starts
+	struct timeval start,end;
+	gettimeofday(&start,NULL);
+
+
 
 #ifdef GPUPROF
 	// Create performance counter Init
@@ -197,7 +202,7 @@ int main(int argc , char** argv) {
 
 	/*int num_iterations_tcontrol = 100000;*/
 	int num_iterations_tcontrol = atoi(argv[3]);
-	tcontrol->init_tap_change_device(context,1024, num_iterations_tcontrol );
+	tcontrol->init_tap_change_device(context,numTap, num_iterations_tcontrol );
 
 	//!Stuff for Value Checker
 	tcontrol->init_value_checker(command_queue,context,device_id);
@@ -319,8 +324,8 @@ int main(int argc , char** argv) {
 					NULL,
 					&event);
 
-			clFinish(command_queue);
-			tcontrol->check_value();
+			//clFinish(command_queue);
+			//tcontrol->check_value();
 			tcontrol->add_phase(count);
 			//printf("OPENCL BUFFER USED  - FIR CODE %p\n",coeffBuffer);
 
@@ -328,8 +333,8 @@ int main(int argc , char** argv) {
 
 			clFlush(command_queue);
 			CHECK_STATUS( ret,"Error: Range kernel. (clCreateKernel)\n");
-			ret = clWaitForEvents(1, &event);
-			ret = clWaitForEvents(1, &event);
+			//ret = clWaitForEvents(1, &event);
+			//ret = clWaitForEvents(1, &event);
 
 #if GPUPROF
 			// End Profile session
@@ -380,6 +385,8 @@ int main(int argc , char** argv) {
 				&event );
 		eventList->add(event);
 		count ++;
+
+		//clFinish(command_queue);
 	}
 
 #if OUTPUT
@@ -408,15 +415,29 @@ int main(int argc , char** argv) {
 	free(coeff);
 	free(temp_output);
 
+
+	
+	
 #ifdef GPUPROF
 	GPA_Destroy();
 #endif
 
+	
 	//eventList->printEvents();
 	eventList->dumpEvents("eventDumps");
 	tcontrol->sync();
 	tcontrol->profiler->dumpEvents("eventDumps_ad");
 	delete eventList;
+
+	// Time of day calculation end
+
+	gettimeofday(&end,NULL);
+
+
+	printf("\nInfo,%d,%d,%f\n",atoi(argv[2]),atoi(argv[3]),(double)((end.tv_sec*1000000 + end.tv_usec)-(start.tv_sec*1000000 + start.tv_usec))/1000.0);
+	fflush(NULL);
+
+
 	return 0;
 }
 
