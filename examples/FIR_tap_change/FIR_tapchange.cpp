@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include "opencl_utils.h"
 #include "FIR_tapchange.h"
 #include "analysis-devices.h"
 #include "tap-change-device.h"
@@ -82,6 +83,7 @@ int main(int argc , char** argv) {
 		numBlocks = atoi(argv[1]);
 		numData = atoi(argv[2]);
 	}
+
 	tap_change_device * tcontrol = new tap_change_device[1];
 
 
@@ -148,10 +150,10 @@ int main(int argc , char** argv) {
 	cl_uint ret_num_devices;
 	cl_uint ret_num_platforms;
 	cl_int ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
-	ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_ALL, 1,
-			&device_id, &ret_num_devices);
+	//ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_ALL, 1,
+	//		&device_id, &ret_num_devices);
 
-	printf("/n No of Devices %d",ret_num_platforms );
+	printf("\n No of Platforms %d",ret_num_platforms );
 
 	char *platformVendor;
 	size_t platInfoSize;
@@ -165,12 +167,34 @@ int main(int argc , char** argv) {
 	printf("\tVendor: %s\n", platformVendor);
 	free(platformVendor);
 
+	printf("Get Number of Devices\n");
+	cl_device_id * device_list;
+
+	uint numDevices;
+	cl_int status;
+	status = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ALL,
+                            0, NULL, &numDevices);
+	CHECK_STATUS( status,"Error: (clGetDeviceIDs)\n");
+	printf("num devices %d\n",numDevices);
+	device_list = (cl_device_id * )alloc(sizeof(cl_device_id)*numDevices);
+	status = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ALL,
+	                            numDevices, device_list, NULL);
+
+	for(int i=0;i<numDevices;i++)
+		printf("Device Name %s\n",ad_getDeviceName(device_list[i]));
 
 	// Create an OpenCL context
-	cl_context context = clCreateContext( NULL, 1, &device_id, NULL, NULL, &ret);
+	//cl_context context = clCreateContext( NULL, 1, &device_id, NULL, NULL, &ret);
+	cl_context context = clCreateContext( NULL, numDevices, device_list, NULL, NULL, &ret);
+	CHECK_STATUS( ret,"Error: (clCreateContext)\n");
+
+	int device_to_use = 1;
+	device_id = device_list[device_to_use];
+
 
 	// Create a command queue
 	command_queue = clCreateCommandQueue(context, device_id, CL_QUEUE_PROFILING_ENABLE, &ret);
+	CHECK_STATUS( ret,"clCreateCommandQueue\n");
 
 	// Time of day calculation starts
 	struct timeval start,end;
