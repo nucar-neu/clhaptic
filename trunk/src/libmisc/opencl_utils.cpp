@@ -234,6 +234,24 @@ bool check_for_extensions(char * ext_name, int deviceId, cl_device_id * device_l
     }
 }
 
+
+uint get_num_devices(cl_platform_id ip_platform)
+{
+	uint numDevices;
+	cl_int status;
+	status = clGetDeviceIDs(ip_platform, CL_DEVICE_TYPE_ALL,
+                            0, NULL, &numDevices);
+
+	if(ad_errChk(status,"Error in Getting Device Count\n"))
+		exit(1);
+
+    //print_logging("\n%d devices for platform \n",(numDevices));
+	if(ad_errChk(status,"Error in Getting Devices\n"))
+		exit(1);
+	return numDevices ;
+}
+
+
 void list_all_opencl_devices()
 {
 	cl_int status;
@@ -337,6 +355,41 @@ unsigned int idivup(unsigned int value, unsigned int multiple) {
    }
 
    return value;
+}
+
+//! A wrapper for malloc that checks the return value
+void* alloc(size_t size) {
+
+    void* ptr = NULL;
+    ptr = malloc(size);
+    if(ptr == NULL) {
+        perror("malloc");
+        exit(-1);
+    }
+
+    return ptr;
+}
+
+
+char* ad_getDeviceName(cl_device_id dev)
+{
+    cl_int status;
+    size_t devInfoSize;
+    char* devInfoStr = NULL;
+
+
+    // Print the name
+    status = clGetDeviceInfo(dev, CL_DEVICE_NAME, 0,
+        NULL, &devInfoSize);
+    ad_errChk(status, "Getting device name", true);
+
+    devInfoStr = (char*)alloc(devInfoSize);
+
+    status = clGetDeviceInfo(dev, CL_DEVICE_NAME, devInfoSize,
+        devInfoStr, NULL);
+    ad_errChk(status, "Getting device name", true);
+
+    return(devInfoStr);
 }
 
 

@@ -328,6 +328,7 @@ void setup_baseline(fission_topology * topo)
 
 
 
+
 //! http://forums.amd.com/devforum/messageview.cfm?catid=390&threadid=136299
 //! Reason for using function pointers
 void setup_fission(fission_topology * topo)
