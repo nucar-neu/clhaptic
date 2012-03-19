@@ -27,6 +27,9 @@
 
 #define UNKNOWN -999
 
+void * alloc(size_t);
+
+char * ad_getDeviceName(cl_device_id dev);
 
 void ad_sync(cl_command_queue commandQueue);
 
@@ -61,5 +64,7 @@ char* createFilenameWithTimestamp() ;
 
 //! Generate filename based on the current time and prefix string
 char* createFilenameWithTimestamp(char * prefix_str);
+
+uint get_num_devices(cl_platform_id ip_platform);
 
 #endif // _OPENCL_UTILS_H_
