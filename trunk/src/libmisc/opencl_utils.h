@@ -27,7 +27,7 @@
 
 #define UNKNOWN -999
 
-void * alloc(size_t);
+void * ad_malloc(size_t);
 
 char * ad_getDeviceName(cl_device_id dev);
 

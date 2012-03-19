@@ -358,7 +358,7 @@ unsigned int idivup(unsigned int value, unsigned int multiple) {
 }
 
 //! A wrapper for malloc that checks the return value
-void* alloc(size_t size) {
+void* ad_malloc(size_t size) {
 
     void* ptr = NULL;
     ptr = malloc(size);
@@ -383,7 +383,7 @@ char* ad_getDeviceName(cl_device_id dev)
         NULL, &devInfoSize);
     ad_errChk(status, "Getting device name", true);
 
-    devInfoStr = (char*)alloc(devInfoSize);
+    devInfoStr = (char*)ad_malloc(devInfoSize);
 
     status = clGetDeviceInfo(dev, CL_DEVICE_NAME, devInfoSize,
         devInfoStr, NULL);

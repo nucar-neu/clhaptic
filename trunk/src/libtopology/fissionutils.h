@@ -11,6 +11,10 @@
 
 #include "opencl_utils.h"
 
+/**
+ * This file includes only those utility functions that populate
+ * objects of type fission_topology
+ */
 
 class fission_topology;
 
