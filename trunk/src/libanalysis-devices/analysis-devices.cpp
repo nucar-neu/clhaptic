@@ -25,14 +25,14 @@ void * analysis_device::mapBuffer(cl_mem mem, size_t mem_size, cl_map_flags flag
 		}
 	*/
     //! Blocking map operation used, no offset
-    printf("memory mapped is %d \n",mem_size);
+    //printf("memory mapped is %d \n",mem_size);
     ptr = clEnqueueMapBuffer(queue,
 							mem, CL_TRUE, flags,
 							 0, mem_size, 0, NULL,
 							 NULL,
 							 //eventPtr,
 							 &status);
-    sync();
+    //sync();
     ad_errChk(status, "Error mapping a buffer", true);
 
     if(ptr == NULL )

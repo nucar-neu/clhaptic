@@ -4,9 +4,11 @@
 #include "opencl_utils.h"
 #include "stdio.h"
 
+/*
 #define ENABLE_WARNINGS
 
 //#define ENABLE_LOGGING
+*/
 
 #define LOG_TYPE_WARNING 0x999
 

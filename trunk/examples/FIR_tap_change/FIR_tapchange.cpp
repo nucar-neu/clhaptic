@@ -27,6 +27,7 @@
 #include <dlfcn.h>
 #endif
 
+
 #define MAX_SOURCE_SIZE 10000L
 #define OUTPUT 0 						//Macro maintained to print output result
 										// 1 - Print output results
@@ -176,7 +177,7 @@ int main(int argc , char** argv) {
                             0, NULL, &numDevices);
 	CHECK_STATUS( status,"Error: (clGetDeviceIDs)\n");
 	printf("num devices %d\n",numDevices);
-	device_list = (cl_device_id * )alloc(sizeof(cl_device_id)*numDevices);
+	device_list = (cl_device_id * )malloc(sizeof(cl_device_id)*numDevices);
 	status = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ALL,
 	                            numDevices, device_list, NULL);
 
@@ -188,7 +189,16 @@ int main(int argc , char** argv) {
 	cl_context context = clCreateContext( NULL, numDevices, device_list, NULL, NULL, &ret);
 	CHECK_STATUS( ret,"Error: (clCreateContext)\n");
 
-	int device_to_use = 1;
+	int device_to_use = 999;
+
+#ifdef COMPUTE_GPU
+	device_to_use =  0;
+#endif
+
+#ifdef COMPUTE_CPU
+	device_to_use =  1;
+#endif
+
 	device_id = device_list[device_to_use];
 
 
