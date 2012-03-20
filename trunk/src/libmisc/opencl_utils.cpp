@@ -389,6 +389,7 @@ char* ad_getDeviceName(cl_device_id dev)
         devInfoStr, NULL);
     ad_errChk(status, "Getting device name", true);
 
+    //This will be a memory leak if not freed by caller
     return(devInfoStr);
 }
 

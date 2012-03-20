@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as pat
 
 
-if len(sys.argv)<=3:
-	print("Usage: python haptic_cmdq.py <path to file/eventdump_cmdq1.log> <path to file/eventdump_cmdq2.log>")
-	sys.exit(0)
+#if len(sys.argv)<=5:
+print("Usage: python haptic_cmdq.py <path to file/eventdump_cmdq1.log> <path to file/eventdump_cmdq2.log>")
+#	sys.exit(0)
 command=("./event_edit.sh %s %s") % (sys.argv[1],sys.argv[2])
 os.system(command) 
 d1=read_csv('event_main.csv')

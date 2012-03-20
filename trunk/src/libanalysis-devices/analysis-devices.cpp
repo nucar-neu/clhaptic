@@ -375,7 +375,7 @@ void analysis_device::inject_analysis(int kernel_to_inject   )
 }
 void analysis_device::resolve_waiting()
 {
-	print_warning("No synchronization function provided by Derived class, Base Class stub called");
+	//print_warning("No synchronization function provided by Derived class, Base Class stub called");
 }
 
 //! No arguments means to test all rules.
