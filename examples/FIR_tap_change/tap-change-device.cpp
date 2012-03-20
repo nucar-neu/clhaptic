@@ -80,9 +80,14 @@ void tap_change_device::init_tap_change_device(cl_context ip_ctx, int ip_n_taps,
 	num_iterations = ip_n_iterations;
 	change_interval = 20;
 	//! Need to pass on the OpenCL Context from the application
-	configure_analysis_device_gpu(ip_ctx);
-	//configure_analysis_device_cpu(ip_ctx);
 
+	#ifdef ANALYSIS_GPU
+	configure_analysis_device_gpu(ip_ctx);
+	#endif
+
+	#ifdef ANALYSIS_CPU
+	configure_analysis_device_cpu(ip_ctx);
+	#endif
 
 	cl_int status;
 
