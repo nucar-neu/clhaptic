@@ -29,6 +29,10 @@
 
 void * ad_malloc(size_t);
 
+/*
+ *
+ * \return Pointer to a array allocated with the name of Device
+ */
 char * ad_getDeviceName(cl_device_id dev);
 
 void ad_sync(cl_command_queue commandQueue);
