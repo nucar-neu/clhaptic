@@ -138,7 +138,7 @@ void analysis_device::copyHostToAd(cl_mem buff,void * mem,  size_t mem_size)
 {
 	cl_int status ;
 	status = clEnqueueWriteBuffer(queue,buff,1,0,mem_size,mem,0,NULL,NULL);
-	sync();
+	//sync();
 
 	ad_errChk(status, "copyHostToAd Error");
 }
