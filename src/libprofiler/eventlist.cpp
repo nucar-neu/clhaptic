@@ -416,7 +416,7 @@ printf("Timer start %lu \n",this->gpu_timer_start) ;
     // Write the events to file with each field separated by semicolons
     for(int i = 0; i < (int)this->event_list.size(); i++) {
 //        fprintf(fp, "%s;\t%s;\t%f;\t%f;\t%f;\t%f\n",
-	    fprintf(fp, "%s;\t%s;\t%lu;\t%lu;\t%lu;\t%lu\n",
+	    fprintf(fp, "%s;\t%s;\t%llu;\t%llu;\t%llu;\t%llu\n",
             this->event_list[i]->type,
             this->event_list[i]->name, 
             long( getEventValue(this->event_list[i]->event,
@@ -459,9 +459,9 @@ printf("Timer start %lu \n",this->gpu_timer_start) ;
     //!Bound check
     if(event_list.size() > 0)
     {
-    	long start_t = getEventValue(this->event_list[0]->event, CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start ;
-	long end_t = getEventValue(this->event_list[event_list.size() - 1]->event,CL_PROFILING_COMMAND_END)	- this->gpu_timer_start;
-		printf("Time first %lu \t last %lu \t Diff %f \n",start_t, end_t, float((end_t - start_t))/(1000.0f*1000.0f) );
+    	long long start_t = getEventValue(this->event_list[0]->event, CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start ;
+	long long end_t = getEventValue(this->event_list[event_list.size() - 1]->event,CL_PROFILING_COMMAND_END)	- this->gpu_timer_start;
+		printf("Time first %llu \t last %llu \t Diff %f \n",start_t, end_t, float((end_t - start_t))/(1000.0f*1000.0f) );
     }
     else
     	printf("WARNING - No events Detected\n ");
