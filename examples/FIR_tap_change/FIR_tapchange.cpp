@@ -74,20 +74,22 @@ int main(int argc , char** argv) {
 	int i,count;
 	int local;
 
-	if (argc < 4)
+	if (argc < 5)
 	{
-		printf(" Usage : ./<path to binary> <numBlocks> <numData> <Tap Change Iterations>\n");
+		printf(" Usage : ./<path to binary> <numBlocks> <numData> <Tap Change Iterations> <Tap Change Interval>\n");
 		exit(0);
 	}
+	int ip_change_interval = 20;
 	if (argc > 1)
 	{
 		numBlocks = atoi(argv[1]);
-		numData = atoi(argv[2]);
+		numData = atoi(argv[2]);		
+		ip_change_interval = atoi(argv[4]);
 	}
 
 	tap_change_device * tcontrol = new tap_change_device[1];
-
-
+    tcontrol->change_interval = ip_change_interval;
+    
 	/** Declare the Filter Properties */
 	numTap = 4096;
 	numTotalData = numData * numBlocks;

@@ -1,9 +1,9 @@
 #include <CL/cl.h>
 
 
-#define ANALYSIS_GPU
+//#define ANALYSIS_GPU
 
-//#define ANALYSIS_CPU
+#define ANALYSIS_CPU
 
 #define COMPUTE_GPU
 
