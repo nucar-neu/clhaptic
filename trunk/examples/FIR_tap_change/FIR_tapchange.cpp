@@ -54,6 +54,8 @@ cl_uint numTap = 0;
 cl_uint numData = 0;		// Block size
 cl_uint numTotalData = 0;
 cl_uint numBlocks = 0;
+cl_uint dispatchSize = 0;
+cl_uint dispatchData = 0;
 cl_float* input = NULL;
 cl_float* output = NULL;
 cl_float* coeff = NULL;
@@ -76,7 +78,7 @@ int main(int argc , char** argv) {
 
 	if (argc < 5)
 	{
-		printf(" Usage : ./<path to binary> <numBlocks> <numData> <Tap Change Iterations> <Tap Change Interval>\n");
+		printf(" Usage : ./<path to binary> <numBlocks> <numData> <Dispatch_size> <Tap Change Iterations> <Tap Change Interval> \n");
 		exit(0);
 	}
 	int ip_change_interval = 20;
@@ -84,7 +86,8 @@ int main(int argc , char** argv) {
 	{
 		numBlocks = atoi(argv[1]);
 		numData = atoi(argv[2]);		
-		ip_change_interval = atoi(argv[4]);
+		dispatchSize = atoi(argv[3]);
+		ip_change_interval = atoi(argv[5]);
 	}
 
 	tap_change_device * tcontrol = new tap_change_device[1];
@@ -93,14 +96,15 @@ int main(int argc , char** argv) {
 	/** Declare the Filter Properties */
 	numTap = 4096;
 	numTotalData = numData * numBlocks;
-	local = numData/(32*8);			// Variable maintained to make 8 warps per Local group
+	dispatchData = numData * dispatchSize;
+	local = dispatchData/(32*8);			// Variable maintained to make 8 warps per Local group
 	printf("FIR Filter\n Data Samples : %d \n NumBlocks : %d \n Local Workgroups : %d\n", numData,numBlocks,local);
 
 	/** Define variables here */
 	input = (cl_float *) malloc( numTotalData* sizeof(cl_float) );
 	output = (cl_float *) malloc( numTotalData* sizeof(cl_float) );
 	coeff = (cl_float *) malloc( numTap* sizeof(cl_float) );
-	temp_output = (cl_float *) malloc( (numData+numTap-1) * sizeof(cl_float) );
+	temp_output = (cl_float *) malloc( (dispatchData+numTap-1) * sizeof(cl_float) );
 
 	/** Initialize the input data */
 	for( i=0;i<numTotalData;i++ )
@@ -112,7 +116,7 @@ int main(int argc , char** argv) {
 	for( i=0;i<numTap;i++ )
 		coeff[i] = 100.0/numTap;
 
-	for( i=0; i<(numData+numTap-1); i++ )
+	for( i=0; i<(dispatchData+numTap-1); i++ )
 		temp_output[i] = 0.0;
 
 
@@ -223,13 +227,13 @@ int main(int argc , char** argv) {
 
 	// Create memory buffers on the device for each vector
 	cl_mem inputBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY,
-			sizeof(cl_float) * numData, NULL, &ret);
+			sizeof(cl_float) * dispatchData, NULL, &ret);
 	cl_mem outputBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE,
-			sizeof(cl_float) * numData, NULL, &ret);
+			sizeof(cl_float) * dispatchData, NULL, &ret);
 	cl_mem coeffBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY,
 			sizeof(cl_float) * numTap, NULL, &ret);
 	cl_mem temp_outputBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE,
-			sizeof(cl_float) * (numData+numTap-1), NULL, &ret);
+			sizeof(cl_float) * (dispatchData+numTap-1), NULL, &ret);
 
 	// Create EventList for Timestamps
 	eventList = new EventList(context, command_queue, device_id,true);
@@ -302,24 +306,24 @@ int main(int argc , char** argv) {
 
 
 	// Decide the local group formation
-	size_t globalThreads[1]={numData};
+	size_t globalThreads[1]={dispatchData};
 	size_t localThreads[local];
 	for (i=0;i<local;i++)
-		localThreads[i]=(numData/local);
+		localThreads[i]=(dispatchData/local);
 	cl_command_type cmdType;
 	count = 0;
-	while( count < numBlocks )
+	while( count < (numBlocks/dispatchSize))
 	{
 
 		/* fill in the temp_input buffer object */
 		//for(int z=0 ; z<20; z++)
-		//	printf("Input data %f\n", *(input + (count * numData) + z) );
+		//	printf("Input data %f\n", *(input + (count * dispatchData) + z) );
 		ret = clEnqueueWriteBuffer(command_queue,
 				temp_outputBuffer,
 				1,
 				(numTap-1)*sizeof(cl_float),
-				numData * sizeof(cl_float),
-				input + (count * numData),
+				dispatchData * sizeof(cl_float),
+				input + (count * dispatchData),
 				0,
 				0,
 				&event);
@@ -414,8 +418,8 @@ int main(int argc , char** argv) {
 				outputBuffer,
 				CL_TRUE,
 				0,
-				numData * sizeof( cl_float ),
-				output + count * numData,
+				dispatchData * sizeof( cl_float ),
+				output + count * dispatchData,
 				0,
 				NULL,
 				&event );
