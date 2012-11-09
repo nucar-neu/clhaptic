@@ -89,7 +89,12 @@ int main(int argc , char** argv) {
 		dispatchSize = atoi(argv[3]);
 		ip_change_interval = atoi(argv[5]);
 	}
-
+	if(dispatchSize > numBlocks)
+	{
+		printf("Warning: Dispatch size is greater than the number of blocks\n"
+			"Using numBlocks as the dispatch size\n");
+		dispatchSize = numBlocks;
+	}
 	tap_change_device * tcontrol = new tap_change_device[1];
     tcontrol->change_interval = ip_change_interval;
     
