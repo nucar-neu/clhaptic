@@ -134,7 +134,7 @@ void PhaseControl::mark_phase(int p)
     t.id = p;
     t.start = event_count - event_phase_delta;
     t.delta = event_phase_delta;
-    printf("Phase Added %d\t %d\t %d\n", t.id, t.start, t.delta);
+    //printf("Phase Added %d\t %d\t %d\n", t.id, t.start, t.delta);
     tags.push_back(t);
 
     event_phase_delta = 0;
