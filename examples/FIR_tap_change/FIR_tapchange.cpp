@@ -70,6 +70,11 @@ cl_command_queue cl_getfircq()
 }
 
 
+void add_timing_delta(cl_uint timing_rate)
+{
+	usleep(timing_rate*1000);
+}
+
 int main(int argc , char** argv) {
 
 
@@ -77,7 +82,7 @@ int main(int argc , char** argv) {
 	int i,count;
 	int local;
 
-	if (argc < 5)
+	if (argc < 6)
 	{
 		printf(" Usage : ./<path to binary> <numBlocks> <numData> <Dispatch_size> <Tap Change Iterations> <Tap Change Interval> \n");
 		exit(0);
@@ -135,6 +140,7 @@ int main(int argc , char** argv) {
 	FILE *fip;
 	i=0;
 	fip = fopen("temp_in.dat","r");
+	if (fip == NULL) printf("not good \n");
 	while(i<numTotalData)
 	{
 		fscanf(fip,"%f",&input[i]);
@@ -318,12 +324,22 @@ int main(int argc , char** argv) {
 		localThreads[i]=(dispatchData/local);
 	cl_command_type cmdType;
 	count = 0;
+    timeval t1, t2;
+    double elapsedTime;
+    gettimeofday(&t1, NULL);
+
 	while( count < (numBlocks/dispatchSize))
 	{
 
 		/* fill in the temp_input buffer object */
 		//for(int z=0 ; z<20; z++)
 		//	printf("Input data %f\n", *(input + (count * dispatchData) + z) );
+		//for (int u = 0; u < dispatchSize; u++)
+		//{
+		//	add_timing_delta(timing_rate);
+		//	memcpy(staging_buffer,&input[count*dispatchSize],numData*sizeof(float));
+		//}
+
 		ret = clEnqueueWriteBuffer(command_queue,
 				temp_outputBuffer,
 				1,
@@ -375,9 +391,9 @@ int main(int argc , char** argv) {
 			tcontrol->add_phase(count);
 			//printf("OPENCL BUFFER USED  - FIR CODE %p\n",coeffBuffer);
 
-			tcontrol->inject_analysis(0);
+		//	tcontrol->inject_analysis(0);
 
-			clFlush(command_queue);
+		//	clFlush(command_queue);
 			CHECK_STATUS( ret,"Error: Range kernel. (clCreateKernel)\n");
 			//ret = clWaitForEvents(1, &event);
 			//ret = clWaitForEvents(1, &event);
@@ -433,7 +449,13 @@ int main(int argc , char** argv) {
 		count ++;
 
 		//clFinish(command_queue);
-	}
+	}	//End Loop running FIR
+	clFinish(command_queue);
+
+	gettimeofday(&t2, NULL);
+    elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
+    elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+    printf("Loop elapsedTime\t %f ms \t Time per Block %f ms\n",elapsedTime,elapsedTime/numBlocks);
 
 #if OUTPUT
 	printf("\n The Output:\n");
@@ -477,10 +499,10 @@ int main(int argc , char** argv) {
 
 	// Time of day calculation end
 
-	gettimeofday(&end,NULL);
+	//gettimeofday(&end,NULL);
 
 
-	printf("\nInfo,%d,%d,%f\n",atoi(argv[2]),atoi(argv[3]),(double)((end.tv_sec*1000000 + end.tv_usec)-(start.tv_sec*1000000 + start.tv_usec))/1000.0);
+	//printf("\nInfo,%d,%d,%f\n",atoi(argv[2]),atoi(argv[3]),(double)((end.tv_sec*1000000 + end.tv_usec)-(start.tv_sec*1000000 + start.tv_usec))/1000.0);
 	fflush(NULL);
 
 
