@@ -6,6 +6,10 @@
 #include "math.h"
 #include <CL/cl.h>
 
+#include "cassert"
+
+//void assert(int expn)
+
 //! Macro to enable / disable profiling
 #define ENABLED 1
 
