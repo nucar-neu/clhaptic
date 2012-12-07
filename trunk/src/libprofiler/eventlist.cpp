@@ -460,7 +460,7 @@ printf("Timer start %lu \n",this->gpu_timer_start) ;
     if(event_list.size() > 0)
     {
     	long long start_t = getEventValue(this->event_list[0]->event, CL_PROFILING_COMMAND_QUEUED) - this->gpu_timer_start ;
-	long long end_t = getEventValue(this->event_list[event_list.size() - 1]->event,CL_PROFILING_COMMAND_END)	- this->gpu_timer_start;
+    	long long end_t = getEventValue(this->event_list[event_list.size() - 1]->event,CL_PROFILING_COMMAND_END)	- this->gpu_timer_start;
 		printf("Time first %llu \t last %llu \t Diff %f \n",start_t, end_t, float((end_t - start_t))/(1000.0f*1000.0f) );
     }
     else

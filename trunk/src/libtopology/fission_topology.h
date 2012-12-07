@@ -28,7 +28,6 @@ class fission_topology
     int n_devices_requested;
 
     //! Profiling flags, made so that you can handle queues in different states
-
     bool * profiling_status;
 
 
@@ -36,8 +35,10 @@ class fission_topology
     fission_topology();
 
 
+
     //! Regular OpenCL Object Topology
     cl_uint numRootDevices;
+    cl_uint device_used;
     cl_device_id  * devices;
     cl_device_type * root_device_type;
     cl_context root_context;
@@ -72,6 +73,7 @@ class fission_topology
     cl_command_queue return_subqueue(int );
     cl_command_queue return_subqueue();
     void add_problem_subqueue();
+    cl_device_id get_device_used();
 
     queue_id schedule_kernel();
     //!TODO Command Queue Migration

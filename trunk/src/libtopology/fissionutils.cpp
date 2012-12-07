@@ -182,7 +182,6 @@ void setup_root_queue(fission_topology * topo,
 
 	cl_uint numDevices;
 
-
 	status = clGetPlatformIDs(0, NULL, &numPlatforms);
 	printf("Number of platforms detected:%d\n", numPlatforms);
 	platforms = (cl_platform_id *)malloc(sizeof(cl_device_id)*numPlatforms);
@@ -206,19 +205,22 @@ void setup_root_queue(fission_topology * topo,
 
 
 	//!Check if Device requested is a CPU or a GPU
-	cl_device_type dtype;
-	status = clGetDeviceInfo(topo->devices[device_touse],
-					CL_DEVICE_TYPE,
-					sizeof(dtype),
-					(void *)&dtype,
-					NULL);
+	cl_device_type dtype = CL_DEVICE_TYPE_ALL;
+	//status = clGetDeviceInfo(topo->devices[device_touse],
+	//				CL_DEVICE_TYPE,
+	//				sizeof(dtype),
+	//				(void *)&dtype,
+	//				NULL);
 
 	if(cl_errChk(status,"Error in Getting Device Info\n")) exit(1);
 	if(dtype == CL_DEVICE_TYPE_GPU)
 		printf("Creating GPU Context\n");
 	else if (dtype == CL_DEVICE_TYPE_CPU)
 		printf("Creating CPU Context\n");
-	else perror("This Context Type Not Supported\n");
+	else if (dtype == CL_DEVICE_TYPE_ALL)
+		printf("any device will do");
+	else
+		perror("This Context Type Not Supported\n");
 
 	cl_context_properties cps[3] = {CL_CONTEXT_PLATFORM,
 		(cl_context_properties)(platforms[platform_touse]), 0};
@@ -228,8 +230,11 @@ void setup_root_queue(fission_topology * topo,
 	topo->root_context = clCreateContextFromType(
 					cprops, (cl_device_type)dtype,
 					NULL, NULL, &status);
-	if(cl_errChk(status, "creating Root Context")) exit(1);
+	if(cl_errChk(status, "creating Root Context"))
+		exit(1);
 	topo->rootQueue = (cl_command_queue * )malloc(sizeof(cl_command_queue)*1);
+	topo->device_used = device_touse;
+	printf("device to use %d\n",device_touse);
 	if(enable_profiling == TRUE)
 		topo->rootQueue[0] = clCreateCommandQueue(
 						topo->root_context,
@@ -239,10 +244,10 @@ void setup_root_queue(fission_topology * topo,
 		topo->rootQueue[0] = clCreateCommandQueue(
 						topo->root_context,
 						topo->devices[device_touse],
-						NULL, &status);
+						CL_QUEUE_PROFILING_ENABLE, &status);
 
 
-	if(cl_errChk(status,"clCreateCommandQueue for subdevices failed."))exit(1);
+	if(cl_errChk(status,"clCreateCommandQueue failed."))exit(1);
 
 }
 
