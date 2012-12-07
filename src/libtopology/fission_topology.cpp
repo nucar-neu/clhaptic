@@ -6,6 +6,14 @@
 
 #include "fission_topology.h"
 
+/**
+ * Used to return device used
+ */
+cl_device_id fission_topology::get_device_used()
+{
+	return devices[device_used];
+}
+
 void fission_topology::add_problem_subqueue()
 {
 
