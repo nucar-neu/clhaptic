@@ -535,9 +535,13 @@ cl_program cl_CompileProgram(char * kernelPath,
 
     op_prog = clCreateProgramWithSource(ip_ctx, 1,
             (const char **)&source, NULL, &status);
+	if(ad_errChk(status, "creating program from source")) {
+            printf("status of build %d\n",status);
 
-	status = clBuildProgram(op_prog, 0, NULL,NULL, NULL, NULL);
-	if(ad_errChk(status, "creating program")) {
+	}
+
+	status = clBuildProgram(op_prog, 1, &ip_device,NULL, NULL, NULL);
+	if(ad_errChk(status, "clBuildProgram call")) {
             printf("status of build %d\n",status);
 
 	}
@@ -558,7 +562,7 @@ cl_program cl_CompileProgram(char * kernelPath,
         }
 
         //char *build_log;
-        size_t ret_val_size;
+        size_t ret_val_size=0;
         //printf("Device: %p",topo->devices[0]);
         clGetProgramBuildInfo(op_prog, ip_device, CL_PROGRAM_BUILD_LOG, 0,
             NULL, &ret_val_size);
