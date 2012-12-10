@@ -35,7 +35,6 @@ class fission_topology
     fission_topology();
 
 
-
     //! Regular OpenCL Object Topology
     cl_uint numRootDevices;
     cl_uint device_used;

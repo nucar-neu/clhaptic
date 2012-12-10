@@ -32,4 +32,5 @@ void setup_gpu_queue(cl_context ctx, fission_topology * topo,bool enable_profili
 
 void setup_cpu_queue(cl_context  ip_ctx,fission_topology * topo, bool enable_profiling );
 
+void setup_multiple_root_queue(fission_topology * topo, bool enable_profiling);
 #endif // __FISSION_UTILS_
