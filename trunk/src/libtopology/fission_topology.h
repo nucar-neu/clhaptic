@@ -72,7 +72,7 @@ class fission_topology
     cl_command_queue return_subqueue(int );
     cl_command_queue return_subqueue();
     void add_problem_subqueue();
-    cl_device_id get_device_used();
+    cl_device_id get_device_used( int ip = 0);
 
     queue_id schedule_kernel();
     //!TODO Command Queue Migration

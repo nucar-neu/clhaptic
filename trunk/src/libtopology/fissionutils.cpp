@@ -24,8 +24,8 @@ static clCreateSubDevicesEXT_fn pfn_clCreateSubDevicesEXT = NULL;
 
 //! setup a queue of a certain type given a context
 void setup_gpu_queue(cl_context  ip_ctx,
-				fission_topology * topo,
-				bool enable_profiling = TRUE)
+		fission_topology * topo,
+		bool enable_profiling = TRUE)
 {
 	list_all_opencl_devices();
 	topo->root_context = ip_ctx;
