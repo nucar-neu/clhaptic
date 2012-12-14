@@ -9,9 +9,15 @@
 /**
  * Used to return device used
  */
-cl_device_id fission_topology::get_device_used()
+cl_device_id fission_topology::get_device_used(int ip )
 {
-	return devices[device_used];
+	if (ip == 0)
+	{
+		printf("\nDevice Used = %d", device_used);
+		return devices[device_used];
+	}
+	else
+		return devices[ip];
 }
 
 void fission_topology::add_problem_subqueue()
