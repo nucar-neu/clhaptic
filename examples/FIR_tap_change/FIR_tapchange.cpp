@@ -314,7 +314,7 @@ int main(int argc , char** argv) {
 			&event);
 
 	eventList->add(event);
-
+	ret = clFinish(command_queue);
 
 
 	// Decide the local group formation
@@ -342,7 +342,7 @@ int main(int argc , char** argv) {
 
 		ret = clEnqueueWriteBuffer(command_queue,
 				temp_outputBuffer,
-				1,
+				CL_FALSE,
 				(numTap-1)*sizeof(cl_float),
 				dispatchData * sizeof(cl_float),
 				input + (count * dispatchData),
@@ -391,9 +391,9 @@ int main(int argc , char** argv) {
 			tcontrol->add_phase(count);
 			//printf("OPENCL BUFFER USED  - FIR CODE %p\n",coeffBuffer);
 
-		//	tcontrol->inject_analysis(0);
+			//	tcontrol->inject_analysis(0);
 
-		//	clFlush(command_queue);
+			//	clFlush(command_queue);
 			CHECK_STATUS( ret,"Error: Range kernel. (clCreateKernel)\n");
 			//ret = clWaitForEvents(1, &event);
 			//ret = clWaitForEvents(1, &event);
@@ -438,7 +438,7 @@ int main(int argc , char** argv) {
 		ret = clEnqueueReadBuffer(
 				command_queue,
 				outputBuffer,
-				CL_TRUE,
+				CL_FALSE,
 				0,
 				dispatchData * sizeof( cl_float ),
 				output + count * dispatchData,
